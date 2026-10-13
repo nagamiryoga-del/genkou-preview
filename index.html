@@ -1,0 +1,569 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"></head><body style="margin:0"><title>求人原稿プレビュー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* 3列：左＝入力／中＝スマホの見え方／右＝チェックと提案。狭い画面では縦に積む */
+:root{
+  --bg:#f4f5f7; --panel:#ffffff; --ink:#1d2330; --sub:#5d6575; --line:#dde1e8;
+  --accent:#2f5d9e; --accent-soft:#e8eef8;
+  --bad:#c9302c; --bad-soft:#fde3e1; --warn:#a86b00; --warn-soft:#fff2c9; --ok:#2c7a4b; --ok-soft:#e1f3e8;
+  --phone:#1f2430; --screen:#ffffff; --screen-ink:#222;
+  --f-disp:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;
+  --f-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-phone:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14171d; --panel:#1c2028; --ink:#e7eaf0; --sub:#9aa3b2; --line:#2e343f;
+  --accent:#8fb2e8; --accent-soft:#1f2c42;
+  --bad:#ff8a84; --bad-soft:#4a2020; --warn:#f0c15a; --warn-soft:#43381a; --ok:#7fd3a0; --ok-soft:#1d3a2a;
+  --phone:#05070a; --screen:#202530; --screen-ink:#e9ecf2; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171d; --panel:#1c2028; --ink:#e7eaf0; --sub:#9aa3b2; --line:#2e343f;
+  --accent:#8fb2e8; --accent-soft:#1f2c42;
+  --bad:#ff8a84; --bad-soft:#4a2020; --warn:#f0c15a; --warn-soft:#43381a; --ok:#7fd3a0; --ok-soft:#1d3a2a;
+  --phone:#05070a; --screen:#202530; --screen-ink:#e9ecf2; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.6;padding:20px 16px 40px}
+h1,h2,h3{font-family:var(--f-disp);margin:0;text-wrap:balance}
+button{font:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;max-width:1500px;margin:0 auto 16px}
+header.top h1{font-size:22px;font-weight:900;letter-spacing:.02em}
+header.top p{margin:2px 0 0;color:var(--sub);font-size:13px}
+.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--sub)}
+.ctrl select{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:5px 10px;font-size:13px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--panel);font-weight:700}
+.btn:disabled{opacity:.5;cursor:default}
+
+.grid{display:grid;gap:16px;max-width:1500px;margin:0 auto;grid-template-columns:minmax(0,1fr)}
+@media (min-width:820px){.grid{grid-template-columns:minmax(0,1fr) auto}.col-check{grid-column:1 / -1}}
+@media (min-width:1280px){.grid{grid-template-columns:minmax(0,1.05fr) auto minmax(0,1fr)}.col-check{grid-column:auto}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.panel>h2{font-size:15px;font-weight:700;margin-bottom:10px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px}
+.panel>h2 .count{font-family:var(--f-body);font-weight:400}
+
+/* 入力欄 */
+.field{display:grid;gap:4px;margin-bottom:14px}
+.field-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.field label{font-weight:700;font-size:13px}
+.count{font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:center}
+.count b{color:var(--ink);font-size:14px}
+.count .over{color:var(--bad);font-weight:700}
+.field input,.field textarea{width:100%;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);line-height:1.7}
+.field textarea{resize:vertical;font-family:var(--f-phone)}
+#f-body{min-height:420px} #f-req{min-height:150px}
+.mini{font-size:11px;padding:2px 7px}
+details.extra{margin-bottom:12px;border:1px dashed var(--line);border-radius:8px;padding:8px 10px}
+details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
+.extra-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:8px}
+.extra-grid .field{margin:0}
+.sample-note{font-size:12px;background:var(--warn-soft);color:var(--ink);border-radius:6px;padding:6px 10px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* スマホ */
+.col-prev{display:flex;flex-direction:column;align-items:center;gap:10px}
+.tabs{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.tabs button{border:0;background:transparent;color:var(--sub);padding:6px 18px;font-weight:700;font-size:13px}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--panel)}
+.phone{background:var(--phone);border-radius:30px;padding:12px 10px;width:max-content;max-width:100%}
+.screen{width:calc(var(--w,19) * 1em + 2px);max-width:calc(100vw - 54px);background:var(--screen);color:var(--screen-ink);border-radius:20px;height:min(760px,78vh);overflow-y:auto;font-family:var(--f-phone);font-size:15px;line-height:1.65}
+.wline{white-space:pre;min-height:1.65em}
+.wline.bad{background:var(--bad-soft);box-shadow:inset 3px 0 0 var(--bad)}
+.wline.warn{background:var(--warn-soft);box-shadow:inset 3px 0 0 var(--warn)}
+.legend{font-size:12px;color:var(--sub);display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:340px;text-align:center}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+
+/* Indeed風 */
+.m-bar{padding:10px 14px;gap:8px;font-size:12px;font-weight:700;border-bottom:1px solid var(--line);color:var(--sub);display:flex;justify-content:space-between}
+.m-sec{padding:12px 14px;border-bottom:8px solid var(--bg)}
+.m-cap{font-size:11px;color:var(--sub);margin-bottom:6px;font-family:var(--f-body)}
+.card{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.card .t{font-weight:700;font-size:16px;line-height:1.4;color:var(--accent)}
+.card .c,.card .l{font-size:13px;color:var(--sub)}
+.chip{display:inline-block;font-size:12px;background:var(--bg);border-radius:4px;padding:1px 7px;margin:4px 4px 0 0;color:var(--screen-ink)}
+.snip{font-size:13px;color:var(--sub);margin-top:6px}
+.job-h{font-weight:700;font-size:20px;line-height:1.35;white-space:normal}
+.job-meta{font-size:13px;color:var(--sub);margin-top:4px}
+.sec-h{font-weight:700;font-size:16px;margin:4px 0 6px}
+.hidden-note{font-size:11px;color:var(--sub);border:1px dashed var(--line);border-radius:6px;padding:4px 8px;margin-top:8px;font-family:var(--f-body)}
+/* Airワーク採用ページ風 */
+.a-head{padding:14px;background:var(--accent-soft)}
+.a-head .co{font-size:12px;color:var(--sub);margin-bottom:6px}
+.a-catch{font-weight:700;font-size:15px;color:var(--accent)}
+.a-sec-h{font-weight:700;font-size:15px;padding:6px 0;border-bottom:2px solid var(--accent);margin-bottom:8px}
+
+/* チェック */
+.summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.pill{border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+.pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.info{background:var(--accent-soft);color:var(--accent)}
+.issues{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:420px;overflow-y:auto}
+.issue{border:1px solid var(--line);border-left:4px solid var(--sub);border-radius:6px;padding:7px 10px;font-size:13px;cursor:pointer;background:var(--panel)}
+.issue:hover{border-color:var(--accent)}
+.issue.bad{border-left-color:var(--bad)} .issue.warn{border-left-color:var(--warn)} .issue.info{border-left-color:var(--accent)}
+.issue .where{font-size:11px;color:var(--sub)}
+.issue .fix{color:var(--sub);font-size:12px;margin-top:2px}
+.ai{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.ai h3{font-size:14px;margin-bottom:4px}
+.ai p.note{font-size:12px;color:var(--sub);margin:0 0 8px}
+.ai-btns{display:flex;gap:8px;flex-wrap:wrap}
+.gpt-help{margin-top:6px!important}
+.gpt-text{width:100%;min-height:140px;font:inherit;font-size:12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);padding:8px}
+.ai-status{font-size:13px;color:var(--sub);margin:8px 0}
+.props{display:grid;gap:8px}
+.prop{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px}
+.prop .fld{font-size:11px;color:var(--sub)}
+.prop .b{background:var(--bad-soft);border-radius:4px;padding:3px 6px;margin:4px 0;white-space:pre-wrap;text-decoration:line-through;text-decoration-color:var(--bad)}
+.prop .a{background:var(--ok-soft);border-radius:4px;padding:3px 6px;margin:4px 0;white-space:pre-wrap}
+.prop .why{font-size:12px;color:var(--sub)}
+.prop .row{display:flex;justify-content:flex-end;gap:6px;margin-top:4px}
+.prop.done{opacity:.55}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div>
+    <h1>求人原稿プレビュー</h1>
+    <p>原稿を貼ると、文字数とIndeed・Airワークのスマホでの見え方、読みにくい箇所がすぐ出ます。</p>
+  </div>
+  <div class="ctrl">
+    <label for="wsel">スマホ1行の文字数</label>
+    <select id="wsel"><option>17</option><option>18</option><option selected>19</option><option>20</option><option>21</option><option>22</option></select>
+    <button class="btn" id="clearBtn" type="button">すべて消す</button>
+  </div>
+</header>
+
+<main class="grid">
+  <section class="panel col-in" aria-label="原稿の入力">
+    <div class="sample-note" id="sampleNote"><span>いま入っているのは見本の原稿です（架空の会社）。消して自分の原稿を貼ってください。</span><button class="btn mini" type="button" id="clearBtn2">見本を消す</button></div>
+    <div class="field">
+      <div class="field-head"><label for="f-title">職種名</label><span class="count" id="c-title"></span></div>
+      <input id="f-title" type="text" autocomplete="off">
+    </div>
+    <div class="field">
+      <div class="field-head"><label for="f-catch">キャッチコピー</label><span class="count" id="c-catch"></span></div>
+      <input id="f-catch" type="text" autocomplete="off">
+    </div>
+    <details class="extra">
+      <summary>プレビュー用の情報（会社名・勤務地・給与）</summary>
+      <div class="extra-grid">
+        <div class="field"><label for="f-co">会社名</label><input id="f-co" type="text"></div>
+        <div class="field"><label for="f-loc">勤務地</label><input id="f-loc" type="text"></div>
+        <div class="field"><label for="f-pay">給与</label><input id="f-pay" type="text"></div>
+      </div>
+    </details>
+    <div class="field">
+      <div class="field-head"><label for="f-body">仕事内容</label><span class="count" id="c-body"></span></div>
+      <textarea id="f-body" spellcheck="false"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-head"><label for="f-req">求める人材</label><span class="count" id="c-req"></span></div>
+      <textarea id="f-req" spellcheck="false"></textarea>
+    </div>
+  </section>
+
+  <section class="col-prev" aria-label="スマホでの見え方">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-indeed" aria-selected="true" type="button">Indeed</button>
+      <button role="tab" id="tab-air" aria-selected="false" type="button">Airワーク</button>
+    </div>
+    <div class="phone"><div class="screen" id="screen"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--bad)"></i>1〜3字だけ次の行に落ちる</span>
+      <span><i class="sw" style="background:var(--warn)"></i>折り返す箇条書き</span>
+      <span>画面の配置は目安。折り返しは1行<b id="wlab">19</b>字で再現</span>
+    </div>
+  </section>
+
+  <section class="panel col-check" aria-label="チェックと提案">
+    <h2>見やすさチェック <span class="count" id="c-total"></span></h2>
+    <div class="summary" id="summary"></div>
+    <ul class="issues" id="issues"></ul>
+    <div class="ai" id="aiBox">
+      <h3>直し方の提案（AI）</h3>
+      <p class="note">事実・数字・条件は変えずに、改行・文の長さ・語尾だけを直す案を出します。<span id="aiNoteClaude" hidden>「反映」で原稿に入ります。</span></p>
+      <div class="ai-btns">
+        <button class="btn primary" id="aiBtn" type="button" hidden>見やすくする案を出す</button>
+        <button class="btn" id="aiStop" type="button" hidden>止める</button>
+        <button class="btn" id="gptBtn" type="button">ChatGPT用の依頼文をコピー</button>
+      </div>
+      <p class="note gpt-help">ChatGPTに貼ると、同じ決まりで直し案が返ってきます。依頼文には原稿と自動チェックの結果が入ります。</p>
+      <textarea id="gptText" class="gpt-text" readonly hidden aria-label="ChatGPT用の依頼文"></textarea>
+      <div class="ai-status" id="aiStatus"></div>
+      <div class="props" id="props"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const F = {title:$("f-title"), catch:$("f-catch"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req")};
+const NAMES = {title:"職種名", catch:"キャッチコピー", body:"仕事内容", req:"求める人材"};
+const CATCH_MAX = 30; // Airワークのキャッチコピーは30字を超えると保存できない
+let W = 19, media = "indeed";
+
+const SAMPLE = {
+  title:"パーソナルトレーナー｜駅チカの24時間ジム",
+  catch:"【未経験◎】研修3ヶ月！週2日休み・残業ほぼなし✨",
+  co:"見本フィットネス株式会社（架空）", loc:"東京都世田谷区（三軒茶屋駅 徒歩3分）", pay:"月給25万円〜32万円",
+  body:`＼✨未経験からトレーナーとして一人前に✨／
+✅研修3ヶ月で基礎から学べる
+✅月給25万円〜32万円スタート
+✅トレーニングの資格取得を会社が全額サポートします
+✅駅から徒歩3分
+✅週2日休み・残業ほぼなし
+
+「体を動かす仕事がしたい」
+「人の役に立っている実感がほしい」
+
+そんな方にぴったりのお仕事です。
+
+【✨会社について】
+三軒茶屋で24時間ジムを運営しています。
+会員数は開業から2年で800名を超えました。
+地域の方に長く通っていただいています。
+
+【✨お仕事内容】
+会員さまのトレーニングのサポートと、
+マシンの使い方の説明をお任せします。
+慣れてきたら、パーソナルトレーニングも担当していただきます。
+ノルマはありません。
+無理な営業もありません。
+
+【✨魅力・環境】
+月給25万円〜32万円で、経験に応じて決めます。
+先輩トレーナーがマンツーマンで教えます。`,
+  req:`＼こんな方、歓迎します！／
+・体を動かすことが好きな方
+・人と話すことが好きで、相手の変化を一緒に喜べる方
+・未経験の方も歓迎です`
+};
+
+/* ---------- 文字幅とスマホの折り返し（genkou_check.py と同じ考え方） ---------- */
+const FULL_SYM = "✅✨⭐★☆◎○●■□◆◇▼▲♪！？";
+function cw(ch){
+  if (FULL_SYM.includes(ch)) return 1;
+  const c = ch.codePointAt(0);
+  if (c === 0xFE0F || c === 0x200D) return 0;
+  if (c < 0x80) return 0.5;
+  if (c >= 0xFF61 && c <= 0xFF9F) return 0.5;
+  return 1;
+}
+const width = s => Array.from(s).reduce((a, ch) => a + cw(ch), 0);
+const KINSOKU = "、。，．・：；？！゛゜ヽヾゝゞ々ー）」』】〕〉》”’!?)]}%";
+function wrap(line){
+  const out = []; let cur = "", cwid = 0;
+  for (const ch of Array.from(line)){
+    const c = cw(ch);
+    if (cwid + c > W && cur){
+      if (KINSOKU.includes(ch)){ cur += ch; out.push(cur); cur = ""; cwid = 0; continue; }
+      out.push(cur); cur = ch; cwid = c;
+    } else { cur += ch; cwid += c; }
+  }
+  if (cur || !out.length) out.push(cur);
+  return out;
+}
+const isBullet = ln => /^\s*[✅✔☑・■◆▼★⭐●◎※\-]/.test(ln);
+const isHeading = ln => /^\s*[＼【「『■◆★⭐▼]/.test(ln);
+const len = s => Array.from(s).length;
+const lenNoSpace = s => Array.from(s.replace(/[\s　]/g, "")).length;
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = n => n.toLocaleString("ja-JP");
+
+/* ---------- チェック ---------- */
+const BANNED = [
+  [/ください[。！]?$/m, "「〜ください」で締めない"],
+  [/安心してね|大丈夫です?ね|ですね。/, "話し言葉の語尾にしない"],
+  [/手に入れ/, "胡散臭く聞こえる"],
+  [/じっくり育成/, "ぬるく見える。研修の中身と期間の理由で書く"],
+  [/評価します/, "上から目線に見える"],
+  [/提案します/, "売り手目線に見える"],
+  [/母集団|最適化|ソリューション|伴走/, "分析屋ワード。普通の言葉にする"],
+  [/社会保険完備/, "当たり前の条件。訴求にせず待遇欄へ"],
+  [/昇給あり/, "当たり前の条件。中身（年◯回・実績）がないなら訴求にしない"],
+  [/案件|配属先/, "派遣・客先常駐に見えることがある"],
+];
+const TITLE_BANNED = ["未経験","在宅","フルリモート","リモート","月給","時給","日給","万円","資格取得","キャリアアップ","高収入","残業なし"];
+
+function sentencesOf(text){
+  return text.split(/(?<=[。！？!?♪])|\n/).map(s => s.trim()).filter(Boolean);
+}
+function lineIndexOf(text, needle){
+  const i = text.indexOf(needle); if (i < 0) return -1;
+  return text.slice(0, i).split("\n").length - 1;
+}
+
+function checkBlock(key, text, out){
+  const lines = text.split("\n");
+  let blank = 0;
+  lines.forEach((ln, i) => {
+    if (!ln.trim()){ blank++; if (blank === 2) out.push({lv:"info", key, line:i, msg:"空行が2つ続いています", fix:"空行は1つにすると、間延びせずコピーもしやすくなります"}); return; }
+    blank = 0;
+    const vis = wrap(ln), w = width(ln);
+    const last = vis[vis.length - 1];
+    if (vis.length > 1 && width(last) <= 3){
+      const cut = Math.ceil(width(last));
+      out.push({lv:"bad", key, line:i, msg:`「${last}」だけが次の行に落ちます`, fix:`あと${cut}字短くすると${vis.length - 1}行に収まります。言葉を削るか、意味の切れ目で文を分けます`});
+    }
+    if (vis.length > 1 && isBullet(ln)){
+      out.push({lv:"warn", key, line:i, msg:`箇条書きが${W}字を超えて折り返します（${Math.ceil(w)}字）`, fix:`${Math.ceil(w - W)}字削って1行に収めます`});
+    } else if (/^\s*＼/.test(ln) && vis.length > 1){
+      out.push({lv:"warn", key, line:i, msg:`冒頭の見出しが${W}字を超えて折り返します（${Math.ceil(w)}字）`, fix:`✨を外すか言葉を削って${W}字以内にします`});
+    }
+    const next = lines[i + 1];
+    if (next && next.trim() && !isBullet(ln) && !isHeading(ln) && !isBullet(next) && !isHeading(next) && /[、ぁ-んァ-ヶ一-龠]$/.test(ln.trim())){
+      out.push({lv:"warn", key, line:i, msg:"文の途中で改行しているようです", fix:"1文は1行にして、段落は空行で分けます。長いなら改行でなく文を短くします"});
+    }
+  });
+  // 長い一文
+  for (const s of sentencesOf(text)){
+    if (width(s) > 60) out.push({lv:"warn", key, line:lineIndexOf(text, s), msg:`一文が長めです（${Math.ceil(width(s))}字）`, fix:"40字前後を目安に2文に分けます"});
+  }
+  // です・ます止めの連続
+  const ss = sentencesOf(text); let run = 0, start = 0;
+  ss.forEach((s, i) => {
+    if (/(です|ます|でした|ました)。?$/.test(s)){ if (!run) start = i; run++; }
+    else { if (run >= 3) pushRun(); run = 0; }
+  });
+  if (run >= 3) pushRun();
+  function pushRun(){
+    out.push({lv:"warn", key, line:lineIndexOf(text, ss[start]), msg:`「〜です。〜ます。」で終わる文が${run}文続きます`, fix:"文末に「！」「♪」を混ぜるか、2文をつないでリズムを変えます（名詞止めの連発にはしない）"});
+  }
+  // 否定の言い切り
+  const neg = text.match(/(ません|ではない|じゃない)[。！]/g) || [];
+  if (neg.length >= 2) out.push({lv:"warn", key, line:lineIndexOf(text, neg[1]), msg:`否定の言い切りが${neg.length}回あります`, fix:"「〜しません」を並べず、できること・良いことの形で言い換えます（1本1回まで）"});
+  // 同じ金額のくり返し
+  const money = {};
+  (text.normalize("NFKC").replace(/,/g, "").match(/\d[\d.]*\s*万?円/g) || []).forEach(m => money[m] = (money[m] || 0) + 1);
+  Object.entries(money).forEach(([m, c]) => { if (c >= 2) out.push({lv:"info", key, line:-1, msg:`「${m}」が${c}回出てきます`, fix:"同じ条件は1か所で言えば十分です"}); });
+  // 言葉
+  for (const [re, why] of BANNED){
+    const m = text.match(re);
+    if (m) out.push({lv:"info", key, line:lineIndexOf(text, m[0]), msg:`「${m[0]}」`, fix:why});
+  }
+}
+
+function runChecks(){
+  const out = [];
+  const t = F.title.value, c = F.catch.value;
+  for (const w of TITLE_BANNED) if (t.includes(w)) out.push({lv:"bad", key:"title", line:0, msg:`職種名に「${w}」は入れられません`, fix:"待遇や条件はキャッチコピーか本文で伝えます"});
+  if (len(c) > CATCH_MAX) out.push({lv:"bad", key:"catch", line:0, msg:`キャッチコピーが${len(c)}字です`, fix:`Airワークは${CATCH_MAX}字を超えると保存できません。${len(c) - CATCH_MAX}字削ります`});
+  checkBlock("body", F.body.value, out);
+  checkBlock("req", F.req.value, out);
+  return out;
+}
+
+/* ---------- 文字数 ---------- */
+function counts(){
+  const set = (id, k, max) => {
+    const v = F[k].value, n = len(v), ns = lenNoSpace(v);
+    let h = `<span><b>${fmt(ns)}</b>字</span>`;
+    if (k === "body" || k === "req") h += `<span>改行・空白込み ${fmt(n)}字</span><span>${v ? v.split("\n").length : 0}行</span>`;
+    if (max) h += `<span class="${n > max ? "over" : ""}">上限 ${max}字</span>`;
+    $(id).innerHTML = h;
+  };
+  set("c-title", "title"); set("c-catch", "catch", CATCH_MAX); set("c-body", "body"); set("c-req", "req");
+}
+
+/* ---------- プレビュー ---------- */
+function renderText(text){
+  return text.split("\n").map(ln => {
+    if (!ln.trim()) return `<div class="wline">&nbsp;</div>`;
+    const vis = wrap(ln), bullet = isBullet(ln) || /^\s*＼/.test(ln);
+    return vis.map((v, k) => {
+      let cls = "wline";
+      if (vis.length > 1 && k === vis.length - 1 && width(v) <= 3) cls += " bad";
+      else if (vis.length > 1 && bullet) cls += " warn";
+      return `<div class="${cls}">${esc(v)}</div>`;
+    }).join("");
+  }).join("");
+}
+const val = (k, d) => esc(F[k].value.trim() || d);
+function snippet(text){
+  const first = text.split("\n").filter(l => l.trim()).slice(0, 3).join(" ");
+  return esc(Array.from(first).slice(0, 60).join("")) + (len(first) > 60 ? "…" : "");
+}
+function renderPreview(){
+  const box = $("screen"), W2 = `width:${W}em`;
+  box.style.setProperty("--w", W + 1.9);
+  const body = renderText(F.body.value), req = renderText(F.req.value);
+  if (media === "indeed"){
+    box.innerHTML = `
+      <div class="m-bar"><span>Indeed（見え方の目安）</span><span>求人検索</span></div>
+      <div class="m-sec"><div class="m-cap">検索結果の一覧</div>
+        <div class="card"><div class="t">${val("title","職種名")}</div><div class="c">${val("co","会社名")}</div><div class="l">${val("loc","勤務地")}</div>
+        ${F.pay.value.trim() ? `<span class="chip">${val("pay","")}</span>` : ""}<div class="snip">${snippet(F.body.value)}</div></div></div>
+      <div class="m-sec"><div class="m-cap">求人ページ</div>
+        <div class="job-h">${val("title","職種名")}</div><div class="job-meta">${val("co","会社名")}<br>${val("loc","勤務地")}</div>
+        ${F.pay.value.trim() ? `<span class="chip">${val("pay","")}</span>` : ""}
+        <div class="hidden-note">キャッチコピーはIndeed側での出方が求人によって違うため、ここでは出していません</div></div>
+      <div class="m-sec"><div class="sec-h">仕事内容</div><div style="${W2}">${body}</div></div>
+      ${F.req.value.trim() ? `<div class="m-sec"><div class="sec-h">求める人材</div><div style="${W2}">${req}</div></div>` : ""}`;
+  } else {
+    box.innerHTML = `
+      <div class="m-bar"><span>Airワーク 採用ページ（見え方の目安）</span></div>
+      <div class="a-head"><div class="co">${val("co","会社名")}</div>
+        <div class="a-catch" style="${W2}">${renderText(F.catch.value.trim() || "キャッチコピー")}</div>
+        <div class="job-h" style="margin-top:6px">${val("title","職種名")}</div>
+        <div><span class="chip">${val("loc","勤務地")}</span>${F.pay.value.trim() ? `<span class="chip">${val("pay","")}</span>` : ""}</div></div>
+      <div class="m-sec"><div class="a-sec-h">仕事内容</div><div style="${W2}">${body}</div></div>
+      ${F.req.value.trim() ? `<div class="m-sec"><div class="a-sec-h">求める人材</div><div style="${W2}">${req}</div></div>` : ""}`;
+  }
+}
+
+/* ---------- チェック結果の表示 ---------- */
+let lastIssues = [];
+function renderIssues(){
+  const is = runChecks(); lastIssues = is;
+  const n = lv => is.filter(i => i.lv === lv).length;
+  const total = lenNoSpace(F.body.value) + lenNoSpace(F.req.value);
+  $("c-total").innerHTML = `仕事内容＋求める人材 <b>${fmt(total)}</b>字`;
+  $("summary").innerHTML = is.length
+    ? `<span class="pill bad">直したほうがいい ${n("bad")}</span><span class="pill warn">読みにくい ${n("warn")}</span><span class="pill info">言葉・重複 ${n("info")}</span>`
+    : `<span class="pill ok">気になる箇所はありません</span>`;
+  const order = {bad:0, warn:1, info:2};
+  const sorted = is.map((x, i) => ({...x, i})).sort((a, b) => order[a.lv] - order[b.lv] || (a.key > b.key ? 1 : a.key < b.key ? -1 : a.line - b.line));
+  $("issues").innerHTML = sorted.map(x => `<li class="issue ${x.lv}" tabindex="0" data-k="${x.key}" data-l="${x.line}">
+      <div class="where">${NAMES[x.key]}${x.line >= 0 && (x.key === "body" || x.key === "req") ? `・${x.line + 1}行目` : ""}</div>
+      <div>${esc(x.msg)}</div><div class="fix">${esc(x.fix)}</div></li>`).join("");
+}
+$("issues").addEventListener("click", e => jump(e.target.closest(".issue")));
+$("issues").addEventListener("keydown", e => { if (e.key === "Enter") jump(e.target.closest(".issue")); });
+function jump(li){
+  if (!li) return;
+  const el = F[li.dataset.k], line = +li.dataset.l;
+  el.focus();
+  if (line < 0 || el.tagName !== "TEXTAREA") return;
+  const ls = el.value.split("\n"); let s = 0;
+  for (let i = 0; i < line; i++) s += ls[i].length + 1;
+  el.setSelectionRange(s, s + (ls[line] || "").length);
+  const lh = parseFloat(getComputedStyle(el).lineHeight) || 24;
+  el.scrollTop = Math.max(0, line * lh - el.clientHeight / 3);
+}
+
+/* ---------- 保存と更新 ---------- */
+const KEY = "genkou-preview-v1";
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(Object.fromEntries(Object.entries(F).map(([k, el]) => [k, el.value])))); } catch(e){} }
+function load(){
+  try { const d = JSON.parse(localStorage.getItem(KEY) || "null"); if (d) return d; } catch(e){}
+  return null;
+}
+let timer;
+function update(){ counts(); renderPreview(); renderIssues(); }
+function onInput(){ $("sampleNote").hidden = true; clearTimeout(timer); timer = setTimeout(() => { update(); save(); }, 120); }
+Object.values(F).forEach(el => el.addEventListener("input", onInput));
+function fill(d){ for (const k in F) F[k].value = d[k] || ""; update(); }
+function clearAll(){ fill({}); $("sampleNote").hidden = true; save(); $("props").innerHTML = ""; $("aiStatus").textContent = ""; F.title.focus(); }
+$("clearBtn").onclick = clearAll; $("clearBtn2").onclick = clearAll;
+$("wsel").onchange = e => { W = +e.target.value; $("wlab").textContent = W; update(); };
+function setTab(m){ media = m; $("tab-indeed").setAttribute("aria-selected", m === "indeed"); $("tab-air").setAttribute("aria-selected", m === "air"); renderPreview(); }
+$("tab-indeed").onclick = () => setTab("indeed"); $("tab-air").onclick = () => setTab("air");
+
+const saved = load();
+if (saved && Object.values(saved).some(v => v)) { fill(saved); $("sampleNote").hidden = true; } else fill(SAMPLE);
+
+/* ---------- AIの提案 ---------- */
+let sample = null, ctl = null;
+(async () => {
+  try { sample = await window.claude?.use?.("sample"); } catch(e){ sample = null; }
+  if (sample){ $("aiBtn").hidden = false; $("aiNoteClaude").hidden = false; }
+})();
+
+function buildPrompt(forGpt){
+  const issueText = lastIssues.slice(0, 25).map(x => `- ${NAMES[x.key]}${x.line >= 0 ? ` ${x.line + 1}行目` : ""}：${x.msg}（${x.fix}）`).join("\n") || "- なし";
+  return `あなたは求人原稿の編集者です。下の求人原稿を、スマホ（1行${W}字で折り返す）で読みやすくするための修正案を出してください。
+
+守ること：
+- 事実・数字・条件・会社名・固有名詞は1つも変えない。原稿にない情報を足さない
+- 直すのは見やすさだけ：1〜3字だけ次の行に落ちる行／${W}字を超えて折り返す箇条書き／文の途中の改行／60字を超える長い文／「〜です。〜ます。」が3文以上続くところ／近くでの同じ言い回しのくり返し
+- 1文は1行。文の途中で改行しない。長い文は改行で割らず、文そのものを短くするか2文に分ける
+- 箇条書き（✅や「・」で始まる行）は1行${W}字以内
+- です・ますを名詞止めや、意味の伝わらない箇条書きに置き換えない。1文40字以内を目安に、文末に「！」「♪」を混ぜてよい
+- 「〜ください」で締めない。話し言葉（〜ね）・キャッチコピー調・決め台詞にしない。否定の言い切り（〜ません）を増やさない
+- 普通の会社員が書く、自然な日本語にする
+
+${forGpt ? `出力：直す箇所を最大8件、効果の大きい順に、次の形で並べる。前置き・まとめは書かない。
+■（欄の名前：職種名／キャッチコピー／仕事内容／求める人材）
+元：原稿の行をそのまま写す
+直し：直した後の文
+理由：なぜ見やすくなるか（30字以内）
+
+最後に、提案をすべて反映した原稿の全文を、欄ごとに【】の見出しをつけて出す。直す必要がなければ「直す箇所はありません」とだけ書く。` : `出力：JSON配列だけを返す。最大8件。効果の大きい順。
+[{"field":"仕事内容","before":"原稿の中の行をそのまま","after":"直した後（複数行なら\\nで改行）","reason":"なぜ見やすくなるか（30字以内）"}]
+field は「職種名」「キャッチコピー」「仕事内容」「求める人材」のどれか。
+before は原稿の文字を1字も変えずに写す（1行〜連続する数行）。直す必要がなければ [] を返す。`}
+
+自動チェックで見つかった点：
+${issueText}
+
+原稿：
+【職種名】${F.title.value}
+【キャッチコピー】${F.catch.value}
+【仕事内容】
+${F.body.value}
+【求める人材】
+${F.req.value}`;
+}
+const KEYOF = {"職種名":"title","キャッチコピー":"catch","仕事内容":"body","求める人材":"req"};
+const ERR = {not_granted:"AIの利用が許可されていないため、提案は使えません。", sampling_disabled:"このアカウントではAIの提案が使えません。", rate_limited:"少し時間をおいてから、もう一度押してください。", invalid_json:"提案をうまく受け取れませんでした。もう一度押してください。", session_expired:"ログインし直してから、もう一度押してください。", refused:"この原稿では提案を出せませんでした。"};
+
+$("aiBtn").onclick = async () => {
+  if (!sample) return;
+  if (!F.body.value.trim() && !F.req.value.trim()){ $("aiStatus").textContent = "仕事内容か求める人材を入れてから押してください。"; return; }
+  ctl = new AbortController();
+  let off = false;
+  $("aiBtn").disabled = true; $("aiStop").hidden = false; $("props").innerHTML = "";
+  $("aiStatus").textContent = "提案を考えています（30秒〜1分ほど）…";
+  try {
+    const list = await sample.json(buildPrompt(), {signal: ctl.signal, cache: false});
+    const arr = Array.isArray(list) ? list.filter(p => p && KEYOF[p.field] && typeof p.before === "string" && typeof p.after === "string") : [];
+    if (!arr.length){ $("aiStatus").textContent = "大きく直すところは見つかりませんでした。"; return; }
+    $("aiStatus").textContent = `${arr.length}件の提案があります。使うものだけ「反映」してください。`;
+    renderProps(arr);
+  } catch(e){
+    if (e && e.code === "cancelled") $("aiStatus").textContent = "止めました。";
+    else { $("aiStatus").textContent = ERR[e?.code] || "うまくいきませんでした。もう一度押してください。"; off = ["not_granted","sampling_disabled","not_declared","capability_disabled"].includes(e?.code); }
+  } finally {
+    $("aiBtn").disabled = off;
+    $("aiStop").hidden = true;
+  }
+};
+$("aiStop").onclick = () => ctl?.abort();
+$("gptBtn").onclick = async ev => {
+  const b = ev.currentTarget, t = $("gptText");
+  if (!F.body.value.trim() && !F.req.value.trim()){ b.textContent = "先に原稿を入れてください"; setTimeout(() => b.textContent = "ChatGPT用の依頼文をコピー", 2000); return; }
+  t.value = buildPrompt(true);
+  try { await navigator.clipboard.writeText(t.value); t.hidden = true; b.textContent = "コピーしました。ChatGPTに貼ってください"; }
+  catch(e){ t.hidden = false; t.focus(); t.select(); b.textContent = "下の文を選択しました（⌘Cでコピー）"; }
+  setTimeout(() => b.textContent = "ChatGPT用の依頼文をコピー", 3000);
+};
+
+function renderProps(arr){
+  $("props").innerHTML = "";
+  arr.forEach(p => {
+    const k = KEYOF[p.field];
+    const found = F[k].value.includes(p.before);
+    const d = document.createElement("div"); d.className = "prop";
+    d.innerHTML = `<div class="fld">${esc(p.field)}</div><div class="b"></div><div class="a"></div><div class="why"></div>
+      <div class="row"><button class="btn mini" type="button" data-act="copy">直した文をコピー</button><button class="btn mini primary" type="button" data-act="apply" ${found ? "" : "disabled title='原稿の中に元の文が見つかりません（もう直した可能性があります）'"}>反映</button></div>`;
+    d.querySelector(".b").textContent = p.before;
+    d.querySelector(".a").textContent = p.after;
+    d.querySelector(".why").textContent = p.reason || "";
+    d.querySelector('[data-act="apply"]').onclick = ev => {
+      if (!F[k].value.includes(p.before)) { ev.target.disabled = true; return; }
+      F[k].value = F[k].value.replace(p.before, p.after);
+      d.classList.add("done"); ev.target.disabled = true; ev.target.textContent = "反映しました";
+      update(); save();
+    };
+    d.querySelector('[data-act="copy"]').onclick = async ev => {
+      try { await navigator.clipboard.writeText(p.after); ev.target.textContent = "コピーしました"; }
+      catch(e){ const r = document.createRange(); r.selectNodeContents(d.querySelector(".a")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); ev.target.textContent = "選択しました（⌘Cでコピー）"; }
+    };
+    $("props").append(d);
+  });
+}
+})();
+</script>
+</body></html>
