@@ -284,6 +284,16 @@ const BANNED = [
   [/社会保険完備/, "当たり前の条件。訴求にせず待遇欄へ"],
   [/昇給あり/, "当たり前の条件。中身（年◯回・実績）がないなら訴求にしない"],
   [/案件|配属先/, "派遣・客先常駐に見えることがある"],
+  [/ただの/, "他を下げてから言う形になる。良いところだけを言う"],
+  [/だけでは終わりません|では終わりません|だけではありません/, "否定してから言い直す形。「〜に加え、〜も」で言う"],
+  [/必須ではありません/, "事務的で否定に見える。「不問」「なくても始められます」で言う"],
+  [/ではなく、/, "否定から入っている。良いほうだけを言う（見出しで言ったことのくり返しにもなりやすい）"],
+  [/は、[^。\n]{0,25}ではありません/, "「〜は、〜ではありません」は否定から入る。目指していること・できることで言う"],
+  [/自分だけの|さまざまな|様々な/, "抽象的で何をするかわからない。代表的な仕事・身につくことを具体で書く"],
+  [/スキルを掛け合わせ/, "硬い説明調。身につくスキルと、それで何ができるかを書く"],
+  [/研修(も|を)学べ/, "研修は「受ける」もの。「研修を受けられる」「〜を学べる」にする"],
+  [/仕事へ興味/, "「仕事に興味」にする"],
+  [/という流れです/, "前に「流れは」があると「流れ」が2回になる。「以下の流れで対応します。」のように1回にする"],
 ];
 const TITLE_BANNED = ["未経験","在宅","フルリモート","リモート","月給","時給","日給","万円","資格取得","キャリアアップ","高収入","残業なし"];
 
@@ -319,7 +329,7 @@ function checkBlock(key, text, out){
   });
   // 長い一文
   for (const s of sentencesOf(text)){
-    if (width(s) > 60) out.push({lv:"warn", key, line:lineIndexOf(text, s), msg:`一文が長めです（${Math.ceil(width(s))}字）`, fix:"40字前後を目安に2文に分けます"});
+    if (width(s) > 45) out.push({lv:"warn", key, line:lineIndexOf(text, s), msg:`一文が長めです（${Math.ceil(width(s))}字）`, fix:"40字前後を目安に2文に分けます"});
   }
   // です・ます止めの連続
   const ss = sentencesOf(text); let run = 0, start = 0;
@@ -331,9 +341,41 @@ function checkBlock(key, text, out){
   function pushRun(){
     out.push({lv:"warn", key, line:lineIndexOf(text, ss[start]), msg:`「〜です。〜ます。」で終わる文が${run}文続きます`, fix:"文末に「！」「♪」を混ぜるか、2文をつないでリズムを変えます（名詞止めの連発にはしない）"});
   }
-  // 否定の言い切り
-  const neg = text.match(/(ません|ではない|じゃない)[。！]/g) || [];
-  if (neg.length >= 2) out.push({lv:"warn", key, line:lineIndexOf(text, neg[1]), msg:`否定の言い切りが${neg.length}回あります`, fix:"「〜しません」を並べず、できること・良いことの形で言い換えます（1本1回まで）"});
+  // 否定（「〜ません」「〜ではなく」も数える。1本1回まで）
+  const neg = text.match(/(ません|ではない|じゃない)[。！」』]|ません$|ではなく|じゃなく/gm) || [];
+  if (neg.length >= 2) out.push({lv:"warn", key, line:lineIndexOf(text, neg[1]), msg:`否定の形（〜ません／〜ではなく）が${neg.length}回あります`, fix:"否定を並べず、できること・良いことの形で言い換えます（1本1回まで）"});
+  // 「〜たり。」で終わる文・「〜たり」の3連続
+  for (const m of text.matchAll(/[^。！？\n]*たり[。！]/g)) out.push({lv:"warn", key, line:lineIndexOf(text, m[0]), msg:`「〜たり。」で文が終わっています：${m[0].slice(0, 18)}`, fix:"「〜したり、〜したりできます」の形にするか、文を分けます"});
+  for (const s of text.split(/(?<=[。！？!?])/)) if ((s.match(/たり[、，]/g) || []).length >= 2) out.push({lv:"warn", key, line:lineIndexOf(text, s.trim()), msg:"「〜たり」が3回以上続きます", fix:"文を分けて、仕事を1つずつ言います"});
+  // 「〜は、」で止めたまま箇条書き
+  const ls = lines.map(l => l.trim());
+  ls.forEach((l, i) => {
+    if (!/は[、，]$/.test(l)) return;
+    const nx = ls.slice(i + 1).find(x => x) || "";
+    if (isBullet(nx)) out.push({lv:"warn", key, line:i, msg:`「${l}」で止まったまま箇条書きにしています`, fix:"「〜は、次のとおりです。」のように文を終えてから箇条書きにします"});
+  });
+  // 同じ語を近くでくり返す（名詞は1文の中・副詞は続く2文まで。見出し・箇条書き・空行で区切る）
+  const blocks = []; let cur = [];
+  for (const l of lines){
+    if (!l.trim() || isBullet(l) || isHeading(l)){ if (cur.length){ blocks.push(cur.join("")); cur = []; } if (l.trim()) blocks.push(l); }
+    else cur.push(l.trim());
+  }
+  if (cur.length) blocks.push(cur.join(""));
+  const sents = blocks.flatMap(b => b.split(/(?<=[。！？!?])/)).filter(x => x.trim());
+  const OK = new Set(["万円","客様","お客様","時間","株式会社"]);
+  sents.forEach((s, i) => {
+    const toks = (s.match(/[一-龥々]{2,}|[ァ-ヶー]{3,}/g) || []).filter(t => !OK.has(t));
+    const realDup = t => {
+      const pos = [...s.matchAll(new RegExp(t, "g"))].map(m => m.index);
+      if (pos.some(p => p > 0 && /[\d０-９]/.test(s[p - 1]))) return false;
+      const gap = s.slice(pos[0] + t.length, pos[1]);
+      return !(gap.length <= 15 && /[・、，／\/]/.test(gap));
+    };
+    const dup = [...new Set(toks.filter(t => toks.filter(x => x === t).length >= 2 && realDup(t)))];
+    const both = s + (sents[i + 1] || "");
+    for (const a of new Set(s.match(/もう少し|しっかり|ぜひ|一緒に|たくさん/g) || [])) if (both.split(a).length - 1 >= 2) dup.push(a);
+    if (dup.length) out.push({lv:"info", key, line:lineIndexOf(text, s.trim().slice(0, 12)), msg:`「${dup.join("・")}」を近くで2回言っています`, fix:"片方を消すか、言い換えます"});
+  });
   // 同じ金額のくり返し
   const money = {};
   (text.normalize("NFKC").replace(/,/g, "").match(/\d[\d.]*\s*万?円/g) || []).forEach(m => money[m] = (money[m] || 0) + 1);
