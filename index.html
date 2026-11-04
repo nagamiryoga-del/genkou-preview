@@ -102,6 +102,11 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 .ind .i-row{display:flex;align-items:center;gap:10px;font-size:15px;margin:12px 0 0}
 .ind .i-row .bx{flex:none;width:28px;height:28px;border-radius:6px;background:#eef2fa;color:#2557a7;display:grid;place-items:center;font-weight:700;font-size:15px}
 .ind .i-row .bx svg{width:16px;height:16px}
+.ind .i-feat{padding:18px 16px 4px}
+.ind .i-f{display:grid;grid-template-columns:28px 1fr;column-gap:12px;margin-bottom:14px}
+.ind .i-f svg{width:24px;height:24px;color:#2557a7;grid-row:span 2}
+.ind .i-f b{font-weight:800;font-size:16px}
+.ind .i-f span{color:#767676;font-size:14px;line-height:1.6}
 .ind .i-tabs{position:sticky;top:38px;z-index:2;background:#fff;display:flex;border-bottom:1px solid #e4e2e0;margin-top:22px}
 .ind .i-tabs span{flex:1;text-align:center;padding:12px 0 10px;font-weight:700;font-size:16px;color:#767676}
 .ind .i-tabs span.on{color:#2d2d2d;box-shadow:inset 0 -3px 0 #2d2d2d}
@@ -118,7 +123,7 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 .ind .i-save svg{width:18px;height:22px}
 /* Indeedアプリの検索結果一覧（カード） */
 .screen.lst{background:#f3f2f1;color:#2d2d2d}
-.screen.ind,.screen.lst{width:390px;max-width:calc(100vw - 54px);font-size:15px}
+.screen.ind,.screen.lst{width:430px;max-width:calc(100vw - 54px);font-size:15px}
 .lst .l-top{position:sticky;top:0;z-index:2;background:#2557a7;padding:12px 12px 12px}
 .lst .l-search{background:#fff;border-radius:12px;padding:9px 12px;display:flex;align-items:center;gap:8px;color:#595959;font-size:13px}
 .lst .l-search svg{width:16px;height:16px;flex:none;color:#2d2d2d}
@@ -179,7 +184,7 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
     <p>原稿を貼ると、文字数とIndeed・Airワークのスマホでの見え方、読みにくい箇所がすぐ出ます。</p>
   </div>
   <div class="ctrl">
-    <label for="wsel">スマホ1行の文字数</label>
+    <label for="wsel">Airワークの1行の文字数</label>
     <select id="wsel"><option>17</option><option>18</option><option selected>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option></select>
     <button class="btn" id="clearBtn" type="button">すべて消す</button>
   </div>
@@ -225,7 +230,7 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
     <div class="legend">
       <span><i class="sw" style="background:var(--bad)"></i>1〜3字だけ次の行に落ちる</span>
       <span><i class="sw" style="background:var(--warn)"></i>折り返す箇条書き</span>
-      <span>画面の配置は目安。折り返しは1行<b id="wlab">19</b>字で再現</span>
+      <span>折り返しは1行<b id="wlab">26</b>字で再現（Indeedアプリ＝26字）</span>
     </div>
   </section>
 
@@ -255,7 +260,8 @@ const $ = id => document.getElementById(id);
 const F = {title:$("f-title"), catch:$("f-catch"), type:$("f-type"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req")};
 const NAMES = {title:"職種名", catch:"キャッチコピー", body:"仕事内容", req:"求める人材"};
 const CATCH_MAX = 30; // Airワークのキャッチコピーは30字を超えると保存できない
-let W = 19, media = "list";
+const IND_W = 26; // Indeedアプリの本文は1行26字（2026-11-04 永見のiPhoneの画面で数えた）
+let WA = 19, W = IND_W, media = "list";
 
 const SAMPLE = {
   title:"パーソナルトレーナー｜駅チカの24時間ジム",
@@ -300,7 +306,7 @@ function cw(ch){
   if (FULL_SYM.includes(ch)) return 1;
   const c = ch.codePointAt(0);
   if (c === 0xFE0F || c === 0x200D) return 0;
-  if (c < 0x80) return 0.5;
+  if (c < 0x80) return media === "air" ? 0.5 : 0.6; // iPhoneのIndeedアプリは半角が少し広い（SDGsの行で確認）
   if (c >= 0xFF61 && c <= 0xFF9F) return 0.5;
   return 1;
 }
@@ -311,7 +317,9 @@ function wrap(line){
   for (const ch of Array.from(line)){
     const c = cw(ch);
     if (cwid + c > W && cur){
-      if (KINSOKU.includes(ch)){ cur += ch; out.push(cur); cur = ""; cwid = 0; continue; }
+      if (KINSOKU.includes(ch)){
+        if (media !== "air" && Array.from(cur).length > 1){ const a = Array.from(cur), last = a.pop(); out.push(a.join("")); cur = last + ch; cwid = cw(last) + c; continue; }
+        cur += ch; out.push(cur); cur = ""; cwid = 0; continue; }
       out.push(cur); cur = ch; cwid = c;
     } else { cur += ch; cwid += c; }
   }
@@ -524,10 +532,11 @@ function renderPreview(){
         <div class="i-row"><span class="bx">${ic.pin}</span><span>${val("loc","勤務地")}</span></div>
         ${F.pay.value.trim() ? `<div class="i-row"><span class="bx">¥</span><span>${val("pay","")}</span></div>` : ""}
       </div>
+      <div class="i-feat"><div class="i-f"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 4l18 8-18 8 3-8z"/></svg><b>カンタン応募</b><span>プロフィールの入力だけで応募できる求人です。</span></div></div>
       <div class="i-tabs"><span class="on">募集要項</span><span>企業情報</span></div>
       <div class="i-sec"><div class="i-sec-h"><i></i>仕事内容</div><div class="i-lab">職務内容</div><div class="i-body" style="${W2}">${body}</div></div>
       ${F.req.value.trim() ? `<div class="i-sec"><div class="i-sec-h"><i></i>求める人材</div><div class="i-body" style="${W2}">${req}</div></div>` : ""}
-      <div class="i-note">Indeedアプリの求人ページの見え方の目安。キャッチコピーは灰色の箱に出ます。折り返しは1行${W}字で再現</div>
+      
       <div class="i-foot"><span class="i-apply">応募画面へ進む</span><span class="i-save">${ic.markO}</span></div>`;
   } else {
     box.innerHTML = `
@@ -585,8 +594,8 @@ Object.values(F).forEach(el => el.addEventListener("input", onInput));
 function fill(d){ for (const k in F) F[k].value = d[k] || ""; update(); }
 function clearAll(){ fill({}); $("sampleNote").hidden = true; save(); $("props").innerHTML = ""; $("aiStatus").textContent = ""; F.title.focus(); }
 $("clearBtn").onclick = clearAll; $("clearBtn2").onclick = clearAll;
-$("wsel").onchange = e => { W = +e.target.value; $("wlab").textContent = W; update(); };
-function setTab(m){ media = m; for (const t of ["list","indeed","air"]) $("tab-"+t).setAttribute("aria-selected", m === t); $("screen").scrollTop = 0; renderPreview(); }
+$("wsel").onchange = e => { WA = +e.target.value; if (media === "air") W = WA; $("wlab").textContent = W; update(); };
+function setTab(m){ media = m; W = m === "air" ? WA : IND_W; $("wlab").textContent = W; update(); for (const t of ["list","indeed","air"]) $("tab-"+t).setAttribute("aria-selected", m === t); $("screen").scrollTop = 0; renderPreview(); }
 $("tab-list").onclick = () => setTab("list"); $("tab-indeed").onclick = () => setTab("indeed"); $("tab-air").onclick = () => setTab("air");
 
 const saved = load();
