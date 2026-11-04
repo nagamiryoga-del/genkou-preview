@@ -60,7 +60,13 @@ details.extra{margin-bottom:12px;border:1px dashed var(--line);border-radius:8px
 details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 .extra-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:8px}
 .extra-grid .field{margin:0}
-.sc-h{font-size:14px;margin:22px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+.modes{display:inline-flex;margin-top:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.modes button{border:0;background:transparent;color:var(--sub);padding:7px 20px;font-weight:700;font-size:14px;cursor:pointer}
+.modes button[aria-selected="true"]{background:var(--accent);color:var(--panel)}
+[hidden]{display:none!important}
+.sc-note{font-size:12px;color:var(--sub);margin:-4px 0 12px}
+#f-sair{min-height:380px}
+#f-sind{min-height:280px}
 .sample-note{font-size:12px;background:var(--warn-soft);color:var(--ink);border-radius:6px;padding:6px 10px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
 
 /* スマホ */
@@ -205,8 +211,12 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 
 <header class="top">
   <div>
-    <h1>求人原稿プレビュー</h1>
-    <p>原稿を貼ると、文字数とIndeed・Airワークのスマホでの見え方、読みにくい箇所がすぐ出ます。</p>
+    <h1 id="pgTitle">求人原稿プレビュー</h1>
+    <p id="pgLead">原稿を貼ると、文字数とIndeed・Airワークのスマホでの見え方、読みにくい箇所がすぐ出ます。</p>
+    <div class="modes" role="tablist" aria-label="作るもの">
+      <button role="tab" id="mode-job" aria-selected="true" type="button">求人原稿</button>
+      <button role="tab" id="mode-scout" aria-selected="false" type="button">スカウト文面</button>
+    </div>
   </div>
   <div class="ctrl">
     <label for="wsel">スマホ1行の文字数</label>
@@ -218,6 +228,7 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 <main class="grid">
   <section class="panel col-in" aria-label="原稿の入力">
     <div class="sample-note" id="sampleNote"><span>いま入っているのは見本の原稿です（架空の会社）。消して自分の原稿を貼ってください。</span><button class="btn mini" type="button" id="clearBtn2">見本を消す</button></div>
+    <div id="jobFields">
     <div class="field">
       <div class="field-head"><label for="f-title">職種名</label><span class="count" id="c-title"></span></div>
       <input id="f-title" type="text" autocomplete="off">
@@ -243,7 +254,13 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
       <div class="field-head"><label for="f-req">求める人材</label><span class="count" id="c-req"></span></div>
       <textarea id="f-req" spellcheck="false"></textarea>
     </div>
-    <h2 class="sc-h">スカウト文面</h2>
+    </div>
+    <div id="scoutFields" hidden>
+    <div class="extra-grid">
+      <div class="field"><label for="f-sco">会社名</label><input id="f-sco" type="text" autocomplete="off"></div>
+      <div class="field"><label for="f-stitle">送る求人の職種名</label><input id="f-stitle" type="text" autocomplete="off"></div>
+    </div>
+    <p class="sc-note">会社名・職種名は、プレビューの差出人と求人カードに出ます。</p>
     <div class="field">
       <div class="field-head"><label for="f-ssubj">Airワーク スカウトの件名</label><span class="count" id="c-ssubj"></span></div>
       <input id="f-ssubj" type="text" autocomplete="off">
@@ -255,6 +272,7 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
     <div class="field">
       <div class="field-head"><label for="f-sind">Indeed 自動アプローチの本文</label><span class="count" id="c-sind"></span></div>
       <textarea id="f-sind" spellcheck="false"></textarea>
+    </div>
     </div>
   </section>
 
@@ -297,13 +315,13 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 <script>
 (() => {
 const $ = id => document.getElementById(id);
-const F = {title:$("f-title"), catch:$("f-catch"), type:$("f-type"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req"), ssubj:$("f-ssubj"), sair:$("f-sair"), sind:$("f-sind")};
+const F = {title:$("f-title"), catch:$("f-catch"), type:$("f-type"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req"), sco:$("f-sco"), stitle:$("f-stitle"), ssubj:$("f-ssubj"), sair:$("f-sair"), sind:$("f-sind")};
 const NAMES = {title:"職種名", catch:"キャッチコピー", body:"仕事内容", req:"求める人材", ssubj:"Airワーク スカウト件名", sair:"Airワーク スカウト本文", sind:"Indeed 自動アプローチ"};
 // スカウトの上限：Airワークの件名は30字目安（画面は100字まで入る）、本文は約500字を超えると送信できない（画面の表示は2000字）。Indeedの自動アプローチは300字
 const SUBJ_MAX = 30, SAIR_MAX = 500, SIND_MAX = 300;
 const CATCH_MAX = 30; // Airワークのキャッチコピーは30字を超えると保存できない
 // スマホ1行の文字数：最初は26字（2026-11-04 永見のiPhoneのIndeedアプリで数えた）。19〜26字で切り替えられる。全タブ共通
-let W = 26, media = "list";
+let W = 26, media = "list", mode = "job";
 
 const SAMPLE = {
   title:"パーソナルトレーナー｜駅チカの24時間ジム",
@@ -340,6 +358,7 @@ const SAMPLE = {
 ・体を動かすことが好きな方
 ・人と話すことが好きで、相手の変化を一緒に喜べる方
 ・未経験の方も歓迎です`,
+  sco:"見本フィットネス株式会社（架空）", stitle:"パーソナルトレーナー",
   ssubj:"未経験×研修3ヶ月｜駅3分・週2日休み・月給25万円〜",
   sair:`はじめまして。
 見本フィットネス株式会社の採用担当です。
@@ -524,12 +543,15 @@ function checkBlock(key, text, out){
 
 function runChecks(){
   const out = [];
+  if (mode === "scout") return scoutChecks(out);
   const t = F.title.value, c = F.catch.value;
   for (const w of TITLE_BANNED) if (t.includes(w)) out.push({lv:"bad", key:"title", line:0, msg:`職種名に「${w}」は入れられません`, fix:"待遇や条件はキャッチコピーか本文で伝えます"});
   if (len(c) > CATCH_MAX) out.push({lv:"bad", key:"catch", line:0, msg:`キャッチコピーが${len(c)}字です`, fix:`Airワークは${CATCH_MAX}字を超えると保存できません。${len(c) - CATCH_MAX}字削ります`});
   checkBlock("body", F.body.value, out);
   checkBlock("req", F.req.value, out);
-  // スカウト
+  return out;
+}
+function scoutChecks(out){
   const sj = F.ssubj.value;
   if (len(sj) > SUBJ_MAX) out.push({lv:"warn", key:"ssubj", line:0, msg:`件名が${len(sj)}字です`, fix:`一覧で切れないよう${SUBJ_MAX}字以内にします（Airワークの入力欄は100字まで入ります）`});
   for (const [k, max, why] of [["sair", SAIR_MAX, "Airワークは本文が約500字を超えると送信されません（画面の表示は2000字でも送れない）"], ["sind", SIND_MAX, "Indeedの自動アプローチは300字までです"]]){
@@ -585,8 +607,9 @@ function renderPreview(){
   box.classList.toggle("ind", media === "indeed");
   box.classList.toggle("lst", media === "list");
   box.classList.toggle("sc", media === "sair" || media === "sind");
-  const co = val("co","会社名"), coInit = esc(Array.from(F.co.value.replace(/株式会社|有限会社|合同会社|[（(].*$/g, "").trim() || "社")[0]);
-  const jobCard = btn => `<div class="s-job"><b>${val("title","職種名")}</b><span>${co}</span><span>${val("loc","勤務地")}</span>${F.pay.value.trim() ? `<span>${val("pay","")}</span>` : ""}<span class="s-btn">${btn}</span></div>`;
+  const coRaw = F.sco.value.trim() || F.co.value.trim();
+  const co = esc(coRaw || "会社名"), coInit = esc(Array.from(coRaw.replace(/株式会社|有限会社|合同会社|[（(].*$/g, "").trim() || "社")[0]);
+  const jobCard = btn => `<div class="s-job"><b>${esc(F.stitle.value.trim() || F.title.value.trim() || "職種名")}</b><span>${co}</span><span class="s-btn">${btn}</span></div>`;
   const back = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>';
   if (media === "sair"){
     box.innerHTML = `
@@ -676,8 +699,8 @@ let lastIssues = [];
 function renderIssues(){
   const is = runChecks(); lastIssues = is;
   const n = lv => is.filter(i => i.lv === lv).length;
-  const total = lenNoSpace(F.body.value) + lenNoSpace(F.req.value);
-  $("c-total").innerHTML = `仕事内容＋求める人材 <b>${fmt(total)}</b>字`;
+  if (mode === "scout") $("c-total").innerHTML = `Airワーク <b>${fmt(len(F.sair.value))}</b>字／Indeed <b>${fmt(len(F.sind.value))}</b>字`;
+  else $("c-total").innerHTML = `仕事内容＋求める人材 <b>${fmt(lenNoSpace(F.body.value) + lenNoSpace(F.req.value))}</b>字`;
   $("summary").innerHTML = is.length
     ? `<span class="pill bad">直したほうがいい ${n("bad")}</span><span class="pill warn">読みにくい ${n("warn")}</span><span class="pill info">言葉・重複 ${n("info")}</span>`
     : `<span class="pill ok">気になる箇所はありません</span>`;
@@ -713,14 +736,37 @@ function update(){ counts(); renderPreview(); renderIssues(); }
 function onInput(){ $("sampleNote").hidden = true; clearTimeout(timer); timer = setTimeout(() => { update(); save(); }, 120); }
 Object.values(F).forEach(el => el.addEventListener("input", onInput));
 function fill(d){ for (const k in F) F[k].value = d[k] || ""; update(); }
-function clearAll(){ fill({}); $("sampleNote").hidden = true; save(); $("props").innerHTML = ""; $("aiStatus").textContent = ""; F.title.focus(); }
+function clearAll(){
+  const keys = mode === "scout" ? ["sco","stitle","ssubj","sair","sind"] : ["title","catch","type","co","loc","pay","body","req"];
+  const d = Object.fromEntries(Object.entries(F).map(([k, el]) => [k, keys.includes(k) ? "" : el.value]));
+  fill(d); $("sampleNote").hidden = true; save(); $("props").innerHTML = ""; $("aiStatus").textContent = ""; F.title.focus(); }
 $("clearBtn").onclick = clearAll; $("clearBtn2").onclick = clearAll;
 $("wsel").onchange = e => { W = +e.target.value; $("wlab").textContent = W; update(); };
 function setTab(m){ media = m; for (const t of ["list","indeed","air","sair","sind"]) $("tab-"+t).setAttribute("aria-selected", m === t); $("screen").scrollTop = 0; renderPreview(); }
+function setMode(m){
+  mode = m;
+  $("mode-job").setAttribute("aria-selected", m === "job"); $("mode-scout").setAttribute("aria-selected", m === "scout");
+  $("jobFields").hidden = m !== "job"; $("scoutFields").hidden = m !== "scout";
+  for (const t of ["list","indeed","air"]) $("tab-"+t).hidden = m !== "job";
+  for (const t of ["sair","sind"]) $("tab-"+t).hidden = m !== "scout";
+  $("pgTitle").textContent = m === "job" ? "求人原稿プレビュー" : "スカウト文面プレビュー";
+  $("pgLead").textContent = m === "job" ? "原稿を貼ると、文字数とIndeed・Airワークのスマホでの見え方、読みにくい箇所がすぐ出ます。" : "スカウト文面を貼ると、文字数とAirワーク・Indeedで届いたときのスマホでの見え方、読みにくい箇所がすぐ出ます。";
+  $("sampleNote").querySelector("span").textContent = m === "job" ? "いま入っているのは見本の原稿です（架空の会社）。消して自分の原稿を貼ってください。" : "いま入っているのは見本のスカウトです（架空の会社）。消して自分の文面を貼ってください。";
+  try { localStorage.setItem(KEY + "-mode", m); } catch(e){}
+  setTab(m === "job" ? "list" : "sair");
+  renderIssues();
+}
+$("mode-job").onclick = () => setMode("job"); $("mode-scout").onclick = () => setMode("scout");
 $("tab-list").onclick = () => setTab("list"); $("tab-indeed").onclick = () => setTab("indeed"); $("tab-air").onclick = () => setTab("air"); $("tab-sair").onclick = () => setTab("sair"); $("tab-sind").onclick = () => setTab("sind");
 
 const saved = load();
-if (saved && Object.values(saved).some(v => v)) { fill(saved); $("sampleNote").hidden = true; } else fill(SAMPLE);
+if (saved && Object.values(saved).some(v => v)) {
+  // スカウトが空のまま保存されている人には、スカウトだけ見本を入れる
+  if (!["ssubj","sair","sind"].some(k => saved[k])) for (const k of ["sco","stitle","ssubj","sair","sind"]) saved[k] = SAMPLE[k];
+  fill(saved); $("sampleNote").hidden = true;
+} else fill(SAMPLE);
+let savedMode = "job"; try { savedMode = localStorage.getItem(KEY + "-mode") || "job"; } catch(e){}
+setMode(savedMode === "scout" ? "scout" : "job");
 
 /* ---------- AIの提案 ---------- */
 let sample = null, ctl = null;
@@ -731,6 +777,28 @@ let sample = null, ctl = null;
 
 function buildPrompt(forGpt){
   const issueText = lastIssues.slice(0, 25).map(x => `- ${NAMES[x.key]}${x.line >= 0 ? ` ${x.line + 1}行目` : ""}：${x.msg}（${x.fix}）`).join("\n") || "- なし";
+  if (mode === "scout") return `あなたは求人スカウト文面の編集者です。下のスカウト文面を、スマホ（1行${W}字で折り返す）で読みやすくするための修正案を出してください。
+
+守ること：
+- 事実・数字・条件・会社名・固有名詞は1つも変えない。文面にない情報を足さない
+- 件名は「訴求A×訴求B｜条件・数字」の形で30字以内。！♪は付けない
+- Airワークの本文は500字以内、Indeedの本文は300字以内
+- 型：はじめまして→採用担当→募集の一文→====✅この求人のポイント====→✅3〜4行（各${W}字以内）→心の声「」→「そんな方にぴったりのお仕事です。」→「ご応募お待ちしております。」
+- ！・♪は使わず句点で結ぶ。「レジュメを拝見」「今回ご案内」「〜ください」は使わない
+- 1〜3字だけ次の行に落ちる行をなくす。1文は1行、文の途中で改行しない
+- 普通の会社員が書く、自然な日本語にする
+
+${forGpt ? `出力：直す箇所を最大8件、効果の大きい順に「■欄の名前（件名／Airワーク本文／Indeed本文）／元：／直し：／理由：（30字以内）」の形で並べる。前置き・まとめは書かない。最後に、反映した件名・本文の全文を【】の見出しつきで出す。` : `出力：JSON配列だけを返す。最大8件。[{"field":"Airワーク本文","before":"文面の中の行をそのまま","after":"直した後","reason":"30字以内"}] field は「件名」「Airワーク本文」「Indeed本文」のどれか。before は1字も変えずに写す。直す必要がなければ [] を返す。`}
+
+自動チェックで見つかった点：
+${issueText}
+
+文面：
+【件名】${F.ssubj.value}
+【Airワーク本文】
+${F.sair.value}
+【Indeed本文】
+${F.sind.value}`;
   return `あなたは求人原稿の編集者です。下の求人原稿を、スマホ（1行${W}字で折り返す）で読みやすくするための修正案を出してください。
 
 守ること：
@@ -764,12 +832,12 @@ ${F.body.value}
 【求める人材】
 ${F.req.value}`;
 }
-const KEYOF = {"職種名":"title","キャッチコピー":"catch","仕事内容":"body","求める人材":"req"};
+const KEYOF = {"職種名":"title","キャッチコピー":"catch","仕事内容":"body","求める人材":"req","件名":"ssubj","Airワーク本文":"sair","Indeed本文":"sind"};
 const ERR = {not_granted:"AIの利用が許可されていないため、提案は使えません。", sampling_disabled:"このアカウントではAIの提案が使えません。", rate_limited:"少し時間をおいてから、もう一度押してください。", invalid_json:"提案をうまく受け取れませんでした。もう一度押してください。", session_expired:"ログインし直してから、もう一度押してください。", refused:"この原稿では提案を出せませんでした。"};
 
 $("aiBtn").onclick = async () => {
   if (!sample) return;
-  if (!F.body.value.trim() && !F.req.value.trim()){ $("aiStatus").textContent = "仕事内容か求める人材を入れてから押してください。"; return; }
+  if (mode === "job" ? !F.body.value.trim() && !F.req.value.trim() : !F.sair.value.trim() && !F.sind.value.trim()){ $("aiStatus").textContent = "仕事内容か求める人材を入れてから押してください。"; return; }
   ctl = new AbortController();
   let off = false;
   $("aiBtn").disabled = true; $("aiStop").hidden = false; $("props").innerHTML = "";
@@ -791,7 +859,7 @@ $("aiBtn").onclick = async () => {
 $("aiStop").onclick = () => ctl?.abort();
 $("gptBtn").onclick = async ev => {
   const b = ev.currentTarget, t = $("gptText");
-  if (!F.body.value.trim() && !F.req.value.trim()){ b.textContent = "先に原稿を入れてください"; setTimeout(() => b.textContent = "ChatGPT用の依頼文をコピー", 2000); return; }
+  if (mode === "job" ? !F.body.value.trim() && !F.req.value.trim() : !F.sair.value.trim() && !F.sind.value.trim()){ b.textContent = "先に原稿を入れてください"; setTimeout(() => b.textContent = "ChatGPT用の依頼文をコピー", 2000); return; }
   t.value = buildPrompt(true);
   try { await navigator.clipboard.writeText(t.value); t.hidden = true; b.textContent = "コピーしました。ChatGPTに貼ってください"; }
   catch(e){ t.hidden = false; t.focus(); t.select(); b.textContent = "下の文を選択しました（⌘Cでコピー）"; }
