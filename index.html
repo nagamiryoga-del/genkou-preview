@@ -184,8 +184,8 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
     <p>原稿を貼ると、文字数とIndeed・Airワークのスマホでの見え方、読みにくい箇所がすぐ出ます。</p>
   </div>
   <div class="ctrl">
-    <label for="wsel">Airワークの1行の文字数</label>
-    <select id="wsel"><option>17</option><option>18</option><option selected>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option></select>
+    <label for="wsel">スマホ1行の文字数</label>
+    <select id="wsel"><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option selected>26</option></select>
     <button class="btn" id="clearBtn" type="button">すべて消す</button>
   </div>
 </header>
@@ -230,7 +230,7 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
     <div class="legend">
       <span><i class="sw" style="background:var(--bad)"></i>1〜3字だけ次の行に落ちる</span>
       <span><i class="sw" style="background:var(--warn)"></i>折り返す箇条書き</span>
-      <span>折り返しは1行<b id="wlab">26</b>字で再現（Indeedアプリ＝26字）</span>
+      <span>折り返しは1行<b id="wlab">26</b>字で再現（iPhoneのIndeedアプリ＝26字）</span>
     </div>
   </section>
 
@@ -260,8 +260,8 @@ const $ = id => document.getElementById(id);
 const F = {title:$("f-title"), catch:$("f-catch"), type:$("f-type"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req")};
 const NAMES = {title:"職種名", catch:"キャッチコピー", body:"仕事内容", req:"求める人材"};
 const CATCH_MAX = 30; // Airワークのキャッチコピーは30字を超えると保存できない
-const IND_W = 26; // Indeedアプリの本文は1行26字（2026-11-04 永見のiPhoneの画面で数えた）
-let WA = 19, W = IND_W, media = "list";
+// スマホ1行の文字数：最初は26字（2026-11-04 永見のiPhoneのIndeedアプリで数えた）。19〜26字で切り替えられる。全タブ共通
+let W = 26, media = "list";
 
 const SAMPLE = {
   title:"パーソナルトレーナー｜駅チカの24時間ジム",
@@ -306,7 +306,7 @@ function cw(ch){
   if (FULL_SYM.includes(ch)) return 1;
   const c = ch.codePointAt(0);
   if (c === 0xFE0F || c === 0x200D) return 0;
-  if (c < 0x80) return media === "air" ? 0.5 : 0.6; // iPhoneのIndeedアプリは半角が少し広い（SDGsの行で確認）
+  if (c < 0x80) return 0.6; // iPhoneでは半角が少し広い（SDGsの行で確認）
   if (c >= 0xFF61 && c <= 0xFF9F) return 0.5;
   return 1;
 }
@@ -318,7 +318,7 @@ function wrap(line){
     const c = cw(ch);
     if (cwid + c > W && cur){
       if (KINSOKU.includes(ch)){
-        if (media !== "air" && Array.from(cur).length > 1){ const a = Array.from(cur), last = a.pop(); out.push(a.join("")); cur = last + ch; cwid = cw(last) + c; continue; }
+        if (Array.from(cur).length > 1){ const a = Array.from(cur), last = a.pop(); out.push(a.join("")); cur = last + ch; cwid = cw(last) + c; continue; }
         cur += ch; out.push(cur); cur = ""; cwid = 0; continue; }
       out.push(cur); cur = ch; cwid = c;
     } else { cur += ch; cwid += c; }
@@ -594,8 +594,8 @@ Object.values(F).forEach(el => el.addEventListener("input", onInput));
 function fill(d){ for (const k in F) F[k].value = d[k] || ""; update(); }
 function clearAll(){ fill({}); $("sampleNote").hidden = true; save(); $("props").innerHTML = ""; $("aiStatus").textContent = ""; F.title.focus(); }
 $("clearBtn").onclick = clearAll; $("clearBtn2").onclick = clearAll;
-$("wsel").onchange = e => { WA = +e.target.value; if (media === "air") W = WA; $("wlab").textContent = W; update(); };
-function setTab(m){ media = m; W = m === "air" ? WA : IND_W; $("wlab").textContent = W; update(); for (const t of ["list","indeed","air"]) $("tab-"+t).setAttribute("aria-selected", m === t); $("screen").scrollTop = 0; renderPreview(); }
+$("wsel").onchange = e => { W = +e.target.value; $("wlab").textContent = W; update(); };
+function setTab(m){ media = m; for (const t of ["list","indeed","air"]) $("tab-"+t).setAttribute("aria-selected", m === t); $("screen").scrollTop = 0; renderPreview(); }
 $("tab-list").onclick = () => setTab("list"); $("tab-indeed").onclick = () => setTab("indeed"); $("tab-air").onclick = () => setTab("air");
 
 const saved = load();
