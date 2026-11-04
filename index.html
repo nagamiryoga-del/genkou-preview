@@ -88,6 +88,57 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 .job-meta{font-size:13px;color:var(--sub);margin-top:4px}
 .sec-h{font-weight:700;font-size:16px;margin:4px 0 6px}
 .hidden-note{font-size:11px;color:var(--sub);border:1px dashed var(--line);border-radius:6px;padding:4px 8px;margin-top:8px;font-family:var(--f-body)}
+/* Indeedアプリ風（2026-11-04 永見のiPhoneの画面に合わせた） */
+.screen.ind{background:#fff;color:#2d2d2d;position:relative}
+.ind .i-top{position:sticky;top:0;z-index:2;background:#fff;display:flex;justify-content:space-between;align-items:center;padding:10px 16px 6px}
+.ind .i-grab{width:44px;height:5px;border-radius:3px;background:#b8b8b8}
+.ind .i-ic{width:22px;height:22px;color:#2d2d2d}
+.ind .i-head{padding:6px 16px 4px}
+.ind .i-type{display:inline-block;background:#f3f2f1;color:#2d2d2d;font-weight:700;font-size:12px;border-radius:8px;padding:3px 9px;margin:6px 0 10px}
+.ind .i-title{font-weight:800;font-size:22px;line-height:1.3;white-space:normal;overflow-wrap:anywhere}
+.ind .i-co{color:#595959;font-size:15px;margin-top:8px;line-height:1.55}
+.ind .i-catch{position:relative;background:#f3f2f1;border-radius:10px;padding:22px 14px 14px 14px;margin:16px 0 4px;font-size:15px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}
+.ind .i-catch svg{position:absolute;left:12px;top:-1px;width:14px;height:18px;color:#2557a7}
+.ind .i-row{display:flex;align-items:center;gap:10px;font-size:15px;margin:12px 0 0}
+.ind .i-row .bx{flex:none;width:28px;height:28px;border-radius:6px;background:#eef2fa;color:#2557a7;display:grid;place-items:center;font-weight:700;font-size:15px}
+.ind .i-row .bx svg{width:16px;height:16px}
+.ind .i-tabs{position:sticky;top:38px;z-index:2;background:#fff;display:flex;border-bottom:1px solid #e4e2e0;margin-top:22px}
+.ind .i-tabs span{flex:1;text-align:center;padding:12px 0 10px;font-weight:700;font-size:16px;color:#767676}
+.ind .i-tabs span.on{color:#2d2d2d;box-shadow:inset 0 -3px 0 #2d2d2d}
+.ind .i-sec{padding:16px 16px 6px}
+.ind .i-sec-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;margin-bottom:12px}
+.ind .i-sec-h i{width:16px;height:10px;background:#2557a7;border-radius:2px}
+.ind .i-lab{font-weight:700;font-size:15px;margin-bottom:2px}
+.ind .i-body{font-size:15px;line-height:1.75}
+.ind .i-body .wline{min-height:1.75em}
+.ind .i-note{font-size:11px;color:#767676;border:1px dashed #d4d2d0;border-radius:6px;padding:4px 8px;margin:10px 16px 0;font-family:var(--f-body)}
+.ind .i-foot{position:sticky;bottom:0;z-index:2;background:#fff;border-top:1px solid #e4e2e0;display:flex;gap:10px;padding:12px 14px 16px;margin-top:16px}
+.ind .i-apply{flex:1;background:#2557a7;color:#fff;border-radius:10px;text-align:center;font-weight:800;font-size:16px;padding:12px 0}
+.ind .i-save{flex:none;width:50px;border:1px solid #d4d2d0;border-radius:10px;display:grid;place-items:center;color:#2557a7}
+.ind .i-save svg{width:18px;height:22px}
+/* Indeedアプリの検索結果一覧（カード） */
+.screen.lst{background:#f3f2f1;color:#2d2d2d}
+.screen.ind,.screen.lst{width:390px;max-width:calc(100vw - 54px);font-size:15px}
+.lst .l-top{position:sticky;top:0;z-index:2;background:#2557a7;padding:12px 12px 12px}
+.lst .l-search{background:#fff;border-radius:12px;padding:9px 12px;display:flex;align-items:center;gap:8px;color:#595959;font-size:13px}
+.lst .l-search svg{width:16px;height:16px;flex:none;color:#2d2d2d}
+.lst .l-cap{font-size:12px;color:#595959;padding:10px 12px 2px}
+.lst .l-card{background:#fff;border:1px solid #e4e2e0;border-radius:18px;margin:10px 10px;overflow:hidden}
+.lst .l-in{padding:16px 14px 12px;position:relative}
+.lst .l-mark{position:absolute;right:14px;top:14px;width:16px;height:21px;color:#2557a7}
+.lst .l-type{display:inline-block;background:#f3f2f1;color:#595959;font-weight:700;font-size:11px;border-radius:4px;padding:2px 6px}
+.lst .l-new{background:#c74289;color:#fff;margin-right:4px}
+.lst .l-title{font-weight:800;font-size:17px;line-height:1.5;margin:8px 22px 0 0;overflow-wrap:anywhere}
+.lst .l-catch{display:flex;gap:10px;align-items:center;background:#f3f2f1;border-top:1px solid #e4e2e0;border-bottom:1px solid #e4e2e0;padding:10px 10px;margin:12px 0 4px}
+.lst .l-catch svg{flex:none;width:18px;height:22px;color:#8d8d8d}
+.lst .l-catch span{font-weight:700;font-size:12.5px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.lst .l-row{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:#595959;margin-top:10px;line-height:1.5}
+.lst .l-row svg,.lst .l-row b{flex:none;width:16px;height:16px;color:#767676;margin-top:2px;font-size:15px;text-align:center;line-height:16px}
+.lst .l-foot{border-top:1px solid #e4e2e0;padding:12px 14px;display:flex;align-items:center;gap:6px;font-size:13px}
+.lst .l-foot svg{width:16px;height:16px;color:#2557a7}
+.lst .l-foot b{font-weight:800}
+.lst .l-foot .ago{margin-left:auto;color:#767676}
+.lst .l-ghost{height:60px;background:#fff;border:1px solid #e4e2e0;border-radius:18px;margin:10px;opacity:.6}
 /* Airワーク採用ページ風 */
 .a-head{padding:14px;background:var(--accent-soft)}
 .a-head .co{font-size:12px;color:var(--sub);margin-bottom:6px}
@@ -129,7 +180,7 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
   </div>
   <div class="ctrl">
     <label for="wsel">スマホ1行の文字数</label>
-    <select id="wsel"><option>17</option><option>18</option><option selected>19</option><option>20</option><option>21</option><option>22</option></select>
+    <select id="wsel"><option>17</option><option>18</option><option selected>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option></select>
     <button class="btn" id="clearBtn" type="button">すべて消す</button>
   </div>
 </header>
@@ -146,8 +197,9 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
       <input id="f-catch" type="text" autocomplete="off">
     </div>
     <details class="extra">
-      <summary>プレビュー用の情報（会社名・勤務地・給与）</summary>
+      <summary>プレビュー用の情報（雇用形態・会社名・勤務地・給与）</summary>
       <div class="extra-grid">
+        <div class="field"><label for="f-type">雇用形態</label><input id="f-type" type="text"></div>
         <div class="field"><label for="f-co">会社名</label><input id="f-co" type="text"></div>
         <div class="field"><label for="f-loc">勤務地</label><input id="f-loc" type="text"></div>
         <div class="field"><label for="f-pay">給与</label><input id="f-pay" type="text"></div>
@@ -165,7 +217,8 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 
   <section class="col-prev" aria-label="スマホでの見え方">
     <div class="tabs" role="tablist">
-      <button role="tab" id="tab-indeed" aria-selected="true" type="button">Indeed</button>
+      <button role="tab" id="tab-list" aria-selected="true" type="button">Indeed 一覧</button>
+      <button role="tab" id="tab-indeed" aria-selected="false" type="button">Indeed 求人ページ</button>
       <button role="tab" id="tab-air" aria-selected="false" type="button">Airワーク</button>
     </div>
     <div class="phone"><div class="screen" id="screen"></div></div>
@@ -199,15 +252,15 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 <script>
 (() => {
 const $ = id => document.getElementById(id);
-const F = {title:$("f-title"), catch:$("f-catch"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req")};
+const F = {title:$("f-title"), catch:$("f-catch"), type:$("f-type"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req")};
 const NAMES = {title:"職種名", catch:"キャッチコピー", body:"仕事内容", req:"求める人材"};
 const CATCH_MAX = 30; // Airワークのキャッチコピーは30字を超えると保存できない
-let W = 19, media = "indeed";
+let W = 19, media = "list";
 
 const SAMPLE = {
   title:"パーソナルトレーナー｜駅チカの24時間ジム",
   catch:"【未経験◎】研修3ヶ月！週2日休み・残業ほぼなし✨",
-  co:"見本フィットネス株式会社（架空）", loc:"東京都世田谷区（三軒茶屋駅 徒歩3分）", pay:"月給25万円〜32万円",
+  type:"正社員", co:"見本フィットネス株式会社（架空）", loc:"東京都世田谷区（三軒茶屋駅 徒歩3分）", pay:"月給25万円〜32万円",
   body:`＼✨未経験からトレーナーとして一人前に✨／
 ✅研修3ヶ月で基礎から学べる
 ✅月給25万円〜32万円スタート
@@ -431,18 +484,51 @@ function renderPreview(){
   const box = $("screen"), W2 = `width:${W}em`;
   box.style.setProperty("--w", W + 1.9);
   const body = renderText(F.body.value), req = renderText(F.req.value);
-  if (media === "indeed"){
+  box.classList.toggle("ind", media === "indeed");
+  box.classList.toggle("lst", media === "list");
+  if (media === "list"){
+    const catchTxt = F.catch.value.trim();
+    const bulb = '<svg viewBox="0 0 18 22" fill="currentColor"><path d="M9 0a8 8 0 0 0-4.6 14.6c.6.4.9 1 .9 1.7V17h7.4v-.7c0-.7.3-1.3.9-1.7A8 8 0 0 0 9 0zM5.6 18.5h6.8v1.2H5.6zm1.4 2.2h4V22H7z"/></svg>';
+    const bld = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 15V2h9v4h5v9H1zm2-11v2h2V4zm4 0v2h2V4zM3 8v2h2V8zm4 0v2h2V8zm5 0v2h1V8zM3 12v2h2v-2zm4 0v2h2v-2zm5 0v2h1v-2z"/></svg>';
+    const pin = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
     box.innerHTML = `
-      <div class="m-bar"><span>Indeed（見え方の目安）</span><span>求人検索</span></div>
-      <div class="m-sec"><div class="m-cap">検索結果の一覧</div>
-        <div class="card"><div class="t">${val("title","職種名")}</div><div class="c">${val("co","会社名")}</div><div class="l">${val("loc","勤務地")}</div>
-        ${F.pay.value.trim() ? `<span class="chip">${val("pay","")}</span>` : ""}<div class="snip">${snippet(F.body.value)}</div></div></div>
-      <div class="m-sec"><div class="m-cap">求人ページ</div>
-        <div class="job-h">${val("title","職種名")}</div><div class="job-meta">${val("co","会社名")}<br>${val("loc","勤務地")}</div>
-        ${F.pay.value.trim() ? `<span class="chip">${val("pay","")}</span>` : ""}
-        <div class="hidden-note">キャッチコピーはIndeed側での出方が求人によって違うため、ここでは出していません</div></div>
-      <div class="m-sec"><div class="sec-h">仕事内容</div><div style="${W2}">${body}</div></div>
-      ${F.req.value.trim() ? `<div class="m-sec"><div class="sec-h">求める人材</div><div style="${W2}">${req}</div></div>` : ""}`;
+      <div class="l-top"><div class="l-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg>勤務地・キーワード・各種条件で探す</div></div>
+      <div class="l-cap">検索結果・おすすめに出るカードの見え方（目安）</div>
+      <div class="l-card"><div class="l-in">
+        <svg class="l-mark" viewBox="0 0 14 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1.5 1h11v15.5L7 12.6l-5.5 3.9z"/></svg>
+        <span class="l-type l-new">新着</span><span class="l-type">${val("type","正社員")}</span>
+        <div class="l-title">${val("title","職種名")}</div>
+        ${catchTxt ? `<div class="l-catch">${bulb}<span>${esc(catchTxt)}</span></div>` : ""}
+        <div class="l-row">${bld}<span>${val("co","会社名")}</span></div>
+        <div class="l-row">${pin}<span>${val("loc","勤務地")}</span></div>
+        ${F.pay.value.trim() ? `<div class="l-row"><b>¥</b><span>${val("pay","")}</span></div>` : ""}
+      </div>
+      <div class="l-foot"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 4l18 8-18 8 3-8z"/></svg><b>カンタン応募</b><span class="ago">1日前</span></div></div>
+      <div class="l-ghost"></div><div class="l-ghost"></div>`;
+  } else if (media === "indeed"){
+    const ic = {
+      x:'<svg class="i-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+      share:'<svg class="i-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5M6 11v9h12v-9"/></svg>',
+      mark:'<svg viewBox="0 0 14 18" fill="currentColor"><path d="M1 0h12v18l-6-4.5L1 18z"/></svg>',
+      markO:'<svg viewBox="0 0 14 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1.5 1h11v15.5L7 12.6l-5.5 3.9z"/></svg>',
+      pin:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>'
+    };
+    const catchTxt = F.catch.value.trim();
+    box.innerHTML = `
+      <div class="i-top">${ic.x}<span class="i-grab"></span>${ic.share}</div>
+      <div class="i-head">
+        <span class="i-type">${val("type","正社員")}</span>
+        <div class="i-title">${val("title","職種名")}</div>
+        <div class="i-co">${val("co","会社名")}</div>
+        ${catchTxt ? `<div class="i-catch">${ic.mark}${esc(catchTxt)}</div>` : ""}
+        <div class="i-row"><span class="bx">${ic.pin}</span><span>${val("loc","勤務地")}</span></div>
+        ${F.pay.value.trim() ? `<div class="i-row"><span class="bx">¥</span><span>${val("pay","")}</span></div>` : ""}
+      </div>
+      <div class="i-tabs"><span class="on">募集要項</span><span>企業情報</span></div>
+      <div class="i-sec"><div class="i-sec-h"><i></i>仕事内容</div><div class="i-lab">職務内容</div><div class="i-body" style="${W2}">${body}</div></div>
+      ${F.req.value.trim() ? `<div class="i-sec"><div class="i-sec-h"><i></i>求める人材</div><div class="i-body" style="${W2}">${req}</div></div>` : ""}
+      <div class="i-note">Indeedアプリの求人ページの見え方の目安。キャッチコピーは灰色の箱に出ます。折り返しは1行${W}字で再現</div>
+      <div class="i-foot"><span class="i-apply">応募画面へ進む</span><span class="i-save">${ic.markO}</span></div>`;
   } else {
     box.innerHTML = `
       <div class="m-bar"><span>Airワーク 採用ページ（見え方の目安）</span></div>
@@ -500,8 +586,8 @@ function fill(d){ for (const k in F) F[k].value = d[k] || ""; update(); }
 function clearAll(){ fill({}); $("sampleNote").hidden = true; save(); $("props").innerHTML = ""; $("aiStatus").textContent = ""; F.title.focus(); }
 $("clearBtn").onclick = clearAll; $("clearBtn2").onclick = clearAll;
 $("wsel").onchange = e => { W = +e.target.value; $("wlab").textContent = W; update(); };
-function setTab(m){ media = m; $("tab-indeed").setAttribute("aria-selected", m === "indeed"); $("tab-air").setAttribute("aria-selected", m === "air"); renderPreview(); }
-$("tab-indeed").onclick = () => setTab("indeed"); $("tab-air").onclick = () => setTab("air");
+function setTab(m){ media = m; for (const t of ["list","indeed","air"]) $("tab-"+t).setAttribute("aria-selected", m === t); $("screen").scrollTop = 0; renderPreview(); }
+$("tab-list").onclick = () => setTab("list"); $("tab-indeed").onclick = () => setTab("indeed"); $("tab-air").onclick = () => setTab("air");
 
 const saved = load();
 if (saved && Object.values(saved).some(v => v)) { fill(saved); $("sampleNote").hidden = true; } else fill(SAMPLE);
