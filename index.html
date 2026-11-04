@@ -60,16 +60,41 @@ details.extra{margin-bottom:12px;border:1px dashed var(--line);border-radius:8px
 details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 .extra-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:8px}
 .extra-grid .field{margin:0}
+.sc-h{font-size:14px;margin:22px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
 .sample-note{font-size:12px;background:var(--warn-soft);color:var(--ink);border-radius:6px;padding:6px 10px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
 
 /* スマホ */
 .col-prev{display:flex;flex-direction:column;align-items:center;gap:10px}
-.tabs{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
-.tabs button{border:0;background:transparent;color:var(--sub);padding:6px 18px;font-weight:700;font-size:13px}
+.tabs{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.tabs button{border:0;background:transparent;color:var(--sub);padding:6px 12px;font-weight:700;font-size:13px}
 .tabs button[aria-selected="true"]{background:var(--accent);color:var(--panel)}
 .phone{background:var(--phone);border-radius:30px;padding:12px 10px;width:max-content;max-width:100%}
 .screen{width:calc(var(--w,19) * 1em + 2px);max-width:calc(100vw - 54px);background:var(--screen);color:var(--screen-ink);border-radius:20px;height:min(760px,78vh);overflow-y:auto;font-family:var(--f-phone);font-size:15px;line-height:1.65}
 .wline{white-space:pre;min-height:1.65em}
+/* スカウト */
+.screen.sc{width:430px;max-width:calc(100vw - 54px);background:#f3f2f1;color:#2d2d2d}
+.sc .s-top{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid #e4e2e0;padding:12px 14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+.sc .s-top svg{width:20px;height:20px;flex:none}
+.sc .s-av{width:34px;height:34px;border-radius:8px;background:#e8eefb;color:#2557a7;display:grid;place-items:center;font-weight:800;font-size:15px;flex:none}
+.sc .s-cap{font-size:11px;color:#767676;padding:8px 14px 0}
+.sc .s-mail{background:#fff;margin:10px;border-radius:12px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.sc .s-subj{font-size:17px;font-weight:800;line-height:1.45;margin-bottom:8px}
+.sc .s-from{font-size:12px;color:#767676;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #eee}
+.sc .s-fixed{color:#595959;font-size:14px}
+.sc .s-fixed.note{font-size:11px;color:#8a8a8a;margin-top:12px;line-height:1.6}
+.sc .s-job{border:1px solid #d4d2d0;border-radius:10px;padding:10px 12px;margin:12px 0 4px;font-size:13px}
+.sc .s-job b{display:block;font-size:14px;margin-bottom:3px}
+.sc .s-job span{display:block;color:#595959}
+.sc .s-job .s-btn{color:#fff}
+.sc .s-btn{display:block;text-align:center;background:#2557a7;color:#fff;border-radius:8px;padding:9px;font-weight:700;margin-top:8px;font-size:14px}
+.sc .s-air .s-btn{background:#00a0e9}
+.sc .s-thread{padding:6px 10px 90px}
+.sc .s-date{text-align:center;font-size:11px;color:#767676;margin:8px 0}
+.sc .s-bub{background:#fff;border-radius:4px 16px 16px 16px;padding:10px 12px;box-shadow:0 1px 2px rgba(0,0,0,.08);display:inline-block;max-width:100%}
+.sc .s-meta{font-size:11px;color:#767676;margin:4px 2px 0}
+.sc .s-foot{position:sticky;bottom:0;background:#fff;border-top:1px solid #e4e2e0;padding:10px 14px}
+.sc .s-foot .s-btn{margin:0}
+.sc .s-empty{color:#999;padding:20px 14px;font-size:13px}
 .wline.bad{background:var(--bad-soft);box-shadow:inset 3px 0 0 var(--bad)}
 .wline.warn{background:var(--warn-soft);box-shadow:inset 3px 0 0 var(--warn)}
 .legend{font-size:12px;color:var(--sub);display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:340px;text-align:center}
@@ -218,6 +243,19 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
       <div class="field-head"><label for="f-req">求める人材</label><span class="count" id="c-req"></span></div>
       <textarea id="f-req" spellcheck="false"></textarea>
     </div>
+    <h2 class="sc-h">スカウト文面</h2>
+    <div class="field">
+      <div class="field-head"><label for="f-ssubj">Airワーク スカウトの件名</label><span class="count" id="c-ssubj"></span></div>
+      <input id="f-ssubj" type="text" autocomplete="off">
+    </div>
+    <div class="field">
+      <div class="field-head"><label for="f-sair">Airワーク スカウトの本文</label><span class="count" id="c-sair"></span></div>
+      <textarea id="f-sair" spellcheck="false"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-head"><label for="f-sind">Indeed 自動アプローチの本文</label><span class="count" id="c-sind"></span></div>
+      <textarea id="f-sind" spellcheck="false"></textarea>
+    </div>
   </section>
 
   <section class="col-prev" aria-label="スマホでの見え方">
@@ -225,6 +263,8 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
       <button role="tab" id="tab-list" aria-selected="true" type="button">Indeed 一覧</button>
       <button role="tab" id="tab-indeed" aria-selected="false" type="button">Indeed 求人ページ</button>
       <button role="tab" id="tab-air" aria-selected="false" type="button">Airワーク</button>
+      <button role="tab" id="tab-sair" aria-selected="false" type="button">Airワーク スカウト</button>
+      <button role="tab" id="tab-sind" aria-selected="false" type="button">Indeed スカウト</button>
     </div>
     <div class="phone"><div class="screen" id="screen"></div></div>
     <div class="legend">
@@ -257,8 +297,10 @@ details.extra summary{cursor:pointer;font-size:13px;color:var(--sub)}
 <script>
 (() => {
 const $ = id => document.getElementById(id);
-const F = {title:$("f-title"), catch:$("f-catch"), type:$("f-type"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req")};
-const NAMES = {title:"職種名", catch:"キャッチコピー", body:"仕事内容", req:"求める人材"};
+const F = {title:$("f-title"), catch:$("f-catch"), type:$("f-type"), co:$("f-co"), loc:$("f-loc"), pay:$("f-pay"), body:$("f-body"), req:$("f-req"), ssubj:$("f-ssubj"), sair:$("f-sair"), sind:$("f-sind")};
+const NAMES = {title:"職種名", catch:"キャッチコピー", body:"仕事内容", req:"求める人材", ssubj:"Airワーク スカウト件名", sair:"Airワーク スカウト本文", sind:"Indeed 自動アプローチ"};
+// スカウトの上限：Airワークの件名は30字目安（画面は100字まで入る）、本文は約500字を超えると送信できない（画面の表示は2000字）。Indeedの自動アプローチは300字
+const SUBJ_MAX = 30, SAIR_MAX = 500, SIND_MAX = 300;
 const CATCH_MAX = 30; // Airワークのキャッチコピーは30字を超えると保存できない
 // スマホ1行の文字数：最初は26字（2026-11-04 永見のiPhoneのIndeedアプリで数えた）。19〜26字で切り替えられる。全タブ共通
 let W = 26, media = "list";
@@ -297,7 +339,39 @@ const SAMPLE = {
   req:`＼こんな方、歓迎します！／
 ・体を動かすことが好きな方
 ・人と話すことが好きで、相手の変化を一緒に喜べる方
-・未経験の方も歓迎です`
+・未経験の方も歓迎です`,
+  ssubj:"未経験×研修3ヶ月｜駅3分・週2日休み・月給25万円〜",
+  sair:`はじめまして。
+見本フィットネス株式会社の採用担当です。
+
+未経験から始められるトレーナーを募集しています。
+
+====✅この求人のポイント====
+✅研修3ヶ月で基礎から学べる
+✅三軒茶屋駅から徒歩3分
+✅週2日休み・残業ほぼなし
+✅資格の取得を会社が全額サポート
+==================
+
+「体を動かす仕事がしたい」
+「人の役に立っている実感がほしい」
+そんな方にぴったりのお仕事です。
+
+ご応募お待ちしております。`,
+  sind:`はじめまして。
+見本フィットネス株式会社の採用担当です。
+
+未経験から始められるトレーナーを募集しています。
+
+====✅この求人のポイント====
+✅研修3ヶ月で基礎から学べる
+✅三軒茶屋駅から徒歩3分
+✅週2日休み・残業ほぼなし
+==================
+
+「体を動かす仕事がしたい」
+そんな方にぴったりのお仕事です。
+ご応募お待ちしております。`
 };
 
 /* ---------- 文字幅とスマホの折り返し（genkou_check.py と同じ考え方） ---------- */
@@ -455,6 +529,21 @@ function runChecks(){
   if (len(c) > CATCH_MAX) out.push({lv:"bad", key:"catch", line:0, msg:`キャッチコピーが${len(c)}字です`, fix:`Airワークは${CATCH_MAX}字を超えると保存できません。${len(c) - CATCH_MAX}字削ります`});
   checkBlock("body", F.body.value, out);
   checkBlock("req", F.req.value, out);
+  // スカウト
+  const sj = F.ssubj.value;
+  if (len(sj) > SUBJ_MAX) out.push({lv:"warn", key:"ssubj", line:0, msg:`件名が${len(sj)}字です`, fix:`一覧で切れないよう${SUBJ_MAX}字以内にします（Airワークの入力欄は100字まで入ります）`});
+  for (const [k, max, why] of [["sair", SAIR_MAX, "Airワークは本文が約500字を超えると送信されません（画面の表示は2000字でも送れない）"], ["sind", SIND_MAX, "Indeedの自動アプローチは300字までです"]]){
+    const v = F[k].value;
+    if (!v.trim()) continue;
+    if (len(v) > max) out.push({lv:"bad", key:k, line:-1, msg:`本文が${len(v)}字です（上限${max}字）`, fix:`${why}。${len(v) - max}字削ります`});
+    checkBlock(k, v, out);
+    const m = v.match(/[♪！!]/);
+    if (m) out.push({lv:"warn", key:k, line:lineIndexOf(v, m[0]), msg:`スカウトに「${m[0]}」が入っています`, fix:"スカウトは！・♪を使わず、句点（。）で結びます"});
+    for (const w of ["レジュメを拝見","今回ご案内","話を聞いてみたいかも","まだ応募を決めていなくても"]) if (v.includes(w)) out.push({lv:"warn", key:k, line:lineIndexOf(v, w), msg:`「${w}」`, fix:"スカウトでは使わない言い回しです"});
+    const lastLine = v.trim().split("\n").pop();
+    if (!/お待ちしております/.test(lastLine)) out.push({lv:"info", key:k, line:v.trim().split("\n").length - 1, msg:"締めが「ご応募お待ちしております。」になっていません", fix:"最後の行を「ご応募お待ちしております。」にします"});
+  }
+  if (sj && /[♪！!]/.test(sj)) out.push({lv:"warn", key:"ssubj", line:0, msg:"件名に！や♪が入っています", fix:"件名は「訴求A×訴求B｜条件・数字」の形で、！♪は付けません"});
   return out;
 }
 
@@ -463,11 +552,12 @@ function counts(){
   const set = (id, k, max) => {
     const v = F[k].value, n = len(v), ns = lenNoSpace(v);
     let h = `<span><b>${fmt(ns)}</b>字</span>`;
-    if (k === "body" || k === "req") h += `<span>改行・空白込み ${fmt(n)}字</span><span>${v ? v.split("\n").length : 0}行</span>`;
+    if (k === "body" || k === "req" || k === "sair" || k === "sind") h += `<span>改行・空白込み ${fmt(n)}字</span><span>${v ? v.split("\n").length : 0}行</span>`;
     if (max) h += `<span class="${n > max ? "over" : ""}">上限 ${max}字</span>`;
     $(id).innerHTML = h;
   };
   set("c-title", "title"); set("c-catch", "catch", CATCH_MAX); set("c-body", "body"); set("c-req", "req");
+  set("c-ssubj", "ssubj", SUBJ_MAX); set("c-sair", "sair", SAIR_MAX); set("c-sind", "sind", SIND_MAX);
 }
 
 /* ---------- プレビュー ---------- */
@@ -494,6 +584,37 @@ function renderPreview(){
   const body = renderText(F.body.value), req = renderText(F.req.value);
   box.classList.toggle("ind", media === "indeed");
   box.classList.toggle("lst", media === "list");
+  box.classList.toggle("sc", media === "sair" || media === "sind");
+  const co = val("co","会社名"), coInit = esc(Array.from(F.co.value.replace(/株式会社|有限会社|合同会社|[（(].*$/g, "").trim() || "社")[0]);
+  const jobCard = btn => `<div class="s-job"><b>${val("title","職種名")}</b><span>${co}</span><span>${val("loc","勤務地")}</span>${F.pay.value.trim() ? `<span>${val("pay","")}</span>` : ""}<span class="s-btn">${btn}</span></div>`;
+  const back = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>';
+  if (media === "sair"){
+    box.innerHTML = `
+      <div class="s-top">${back}<span>メッセージ</span></div>
+      <div class="s-cap">Airワークのスカウトが求職者に届いたときの見え方（目安）。前後の灰色の文は媒体が自動で付けます</div>
+      <div class="s-mail s-air">
+        <div class="s-subj">${esc(F.ssubj.value.trim() || "件名")}</div>
+        <div class="s-from">${co} の採用担当</div>
+        <div class="s-fixed">〇〇様</div>
+        <div class="s-fixed" style="margin-bottom:10px">${co}からダイレクトオファーが届いています。</div>
+        ${F.sair.value.trim() ? `<div style="width:${W}em">${renderText(F.sair.value)}</div>` : `<div class="s-empty">左の「Airワーク スカウトの本文」に貼ると、ここに出ます。</div>`}
+        ${jobCard("求人を見る")}
+        <div class="s-fixed note">※このメッセージは、あなたのプロフィールを見た企業から送られています。</div>
+      </div>`;
+    return;
+  }
+  if (media === "sind"){
+    box.innerHTML = `
+      <div class="s-top">${back}<span class="s-av">${coInit}</span><span>${co}</span></div>
+      <div class="s-cap">Indeedの自動アプローチがアプリのメッセージに届いたときの見え方（目安）</div>
+      <div class="s-thread">
+        ${jobCard("求人を見る")}
+        <div class="s-date">今日</div>
+        ${F.sind.value.trim() ? `<div class="s-bub"><div style="width:${W}em">${renderText(F.sind.value)}</div></div><div class="s-meta">${co}・採用担当</div>` : `<div class="s-empty">左の「Indeed 自動アプローチの本文」に貼ると、ここに出ます。</div>`}
+      </div>
+      <div class="s-foot"><span class="s-btn">応募する</span></div>`;
+    return;
+  }
   if (media === "list"){
     const catchTxt = F.catch.value.trim();
     const bulb = '<svg viewBox="0 0 18 22" fill="currentColor"><path d="M9 0a8 8 0 0 0-4.6 14.6c.6.4.9 1 .9 1.7V17h7.4v-.7c0-.7.3-1.3.9-1.7A8 8 0 0 0 9 0zM5.6 18.5h6.8v1.2H5.6zm1.4 2.2h4V22H7z"/></svg>';
@@ -563,7 +684,7 @@ function renderIssues(){
   const order = {bad:0, warn:1, info:2};
   const sorted = is.map((x, i) => ({...x, i})).sort((a, b) => order[a.lv] - order[b.lv] || (a.key > b.key ? 1 : a.key < b.key ? -1 : a.line - b.line));
   $("issues").innerHTML = sorted.map(x => `<li class="issue ${x.lv}" tabindex="0" data-k="${x.key}" data-l="${x.line}">
-      <div class="where">${NAMES[x.key]}${x.line >= 0 && (x.key === "body" || x.key === "req") ? `・${x.line + 1}行目` : ""}</div>
+      <div class="where">${NAMES[x.key]}${x.line >= 0 && ["body","req","sair","sind"].includes(x.key) ? `・${x.line + 1}行目` : ""}</div>
       <div>${esc(x.msg)}</div><div class="fix">${esc(x.fix)}</div></li>`).join("");
 }
 $("issues").addEventListener("click", e => jump(e.target.closest(".issue")));
@@ -595,8 +716,8 @@ function fill(d){ for (const k in F) F[k].value = d[k] || ""; update(); }
 function clearAll(){ fill({}); $("sampleNote").hidden = true; save(); $("props").innerHTML = ""; $("aiStatus").textContent = ""; F.title.focus(); }
 $("clearBtn").onclick = clearAll; $("clearBtn2").onclick = clearAll;
 $("wsel").onchange = e => { W = +e.target.value; $("wlab").textContent = W; update(); };
-function setTab(m){ media = m; for (const t of ["list","indeed","air"]) $("tab-"+t).setAttribute("aria-selected", m === t); $("screen").scrollTop = 0; renderPreview(); }
-$("tab-list").onclick = () => setTab("list"); $("tab-indeed").onclick = () => setTab("indeed"); $("tab-air").onclick = () => setTab("air");
+function setTab(m){ media = m; for (const t of ["list","indeed","air","sair","sind"]) $("tab-"+t).setAttribute("aria-selected", m === t); $("screen").scrollTop = 0; renderPreview(); }
+$("tab-list").onclick = () => setTab("list"); $("tab-indeed").onclick = () => setTab("indeed"); $("tab-air").onclick = () => setTab("air"); $("tab-sair").onclick = () => setTab("sair"); $("tab-sind").onclick = () => setTab("sind");
 
 const saved = load();
 if (saved && Object.values(saved).some(v => v)) { fill(saved); $("sampleNote").hidden = true; } else fill(SAMPLE);
